@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:szadogp/screens/home.dart';
+import 'package:szadogp/screens/login.dart';
 import 'package:szadogp/theme.dart';
 
 void main() {
@@ -14,10 +15,11 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'STart Ap',
+      title: 's.z.a.do gp',
       theme: themeDark,
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      //   home: const HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }
