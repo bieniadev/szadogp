@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:szadogp/models/user_model.dart';
-import 'package:szadogp/providers/current_user_data.dart';
+import 'package:szadogp/providers/login_user.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(currentUserDataProvider);
+    final userProvider = ref.watch(loginUserProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -22,25 +21,10 @@ class HomeScreen extends ConsumerWidget {
           child: Column(
             children: [
               const Text('SIEMANOO'),
-              userData.when(
-                data: (userData) {
-                  List<UserData> info = userData.map((e) => e).toList();
-                  return Expanded(
-                      child: ListView.builder(
-                    itemCount: info.length,
-                    itemBuilder: (_, index) {
-                      return Card(
-                        color: Colors.red,
-                        child: ListTile(
-                          title: Text(info[index].firstname),
-                          subtitle: Text(info[index].id.toString()),
-                          trailing: CircleAvatar(
-                            backgroundImage: NetworkImage(info[index].avatar),
-                          ),
-                        ),
-                      );
-                    },
-                  ));
+              userProvider.when(
+                data: (userResponse) {
+                  String userToken = userResponse;
+                  return Text('Twój poufny token: $userToken');
                 },
                 error: (err, s) => Text(
                   err.toString(),

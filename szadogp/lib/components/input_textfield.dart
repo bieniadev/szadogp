@@ -24,6 +24,7 @@ class InputTextfield extends StatelessWidget {
           fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
           filled: true,
           hintText: hintText,
+          hintStyle: const TextStyle(color: Colors.white70),
         ),
         style: const TextStyle(color: Colors.white70),
       ),

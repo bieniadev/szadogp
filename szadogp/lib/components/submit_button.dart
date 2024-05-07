@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class SubmitButton extends StatelessWidget {
-  const SubmitButton({super.key, required this.onTap});
+  const SubmitButton({super.key, required this.onTap, required this.hintText});
 
   final Function()? onTap;
+  final String hintText;
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +17,10 @@ class SubmitButton extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(8),
         ),
-        child: const Center(
+        child: Center(
           child: Text(
-            'Zaloguj się',
-            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+            hintText,
+            style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
           ),
         ),
       ),

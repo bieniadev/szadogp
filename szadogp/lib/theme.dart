@@ -4,13 +4,13 @@ ThemeData themeDark = ThemeData(
   useMaterial3: true,
 //   fontFamily: GoogleFonts.poppins().fontFamily,
 
-  primaryColor: const Color.fromARGB(255, 98, 90, 209),
+  primaryColor: const Color.fromARGB(255, 100, 37, 163),
 //   scaffoldBackgroundColor: const Color.fromARGB(255, 218, 127, 218),
 //   primarySwatch: Colors.blue,
   colorScheme: ColorScheme.fromSeed(
     // primary: const Color.fromARGB(255, 79, 166, 237),
     seedColor: const Color.fromARGB(255, 59, 46, 161),
-    background: const Color.fromARGB(255, 21, 20, 43),
+    background: const Color.fromARGB(255, 60, 52, 77),
   ),
 
   textTheme: const TextTheme(
