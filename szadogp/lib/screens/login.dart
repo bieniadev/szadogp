@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
+import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/screens/home.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
-
-  // controlers for texfield inputs
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  //sign in user method
-  void signUserIn() {
-    print('Login: ${usernameController.text}');
-    print('Password: ${passwordController.text}');
-    // if (usernameController.text == 'es') {
-
-    // }
-  }
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // controlers for texfield inputs
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
+
+    //sign in user method
+    signUserIn(WidgetRef ref) {
+      print('Login: ${usernameController.text}');
+      print('Password: ${passwordController.text}');
+
+      //set current screen to home;
+      ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+    }
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -49,16 +52,16 @@ class LoginScreen extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // create account text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: const [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Text('Jakiś register zółtodziobie?'),
                   ]),
                 ),
                 const SizedBox(height: 30),
 
                 //sign in button
-                SubmitButton(onTap: signUserIn),
+                SubmitButton(onTap: () => signUserIn(ref)),
                 const SizedBox(height: 30),
               ],
             ),
