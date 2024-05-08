@@ -4,6 +4,7 @@ import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/input_code.dart';
 import 'package:szadogp/components/user_panel.dart';
 import 'package:szadogp/providers/login_user.dart';
+import 'package:szadogp/screens/select_game.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -23,7 +24,13 @@ class HomeScreen extends ConsumerWidget {
             Image.asset('assets/images/logo.png'),
             const SizedBox(height: 60),
             const Spacer(),
-            ActionButton(onTap: () {}, hintText: 'STWÓRZ GRĘ'),
+            ActionButton(
+                hintText: 'STWÓRZ GRĘ',
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SelectGameScreen(),
+                  ));
+                }),
             const Spacer(),
             CodeInput(controller: codeController),
             const SizedBox(height: 40),
