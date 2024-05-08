@@ -11,7 +11,7 @@ class ActionButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.symmetric(horizontal: 30.0),
         decoration: BoxDecoration(
           gradient: const LinearGradient(colors: [
@@ -19,14 +19,14 @@ class ActionButton extends StatelessWidget {
             Color.fromARGB(255, 73, 19, 128)
           ]),
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: Colors.black),
+          border: Border.all(color: Colors.black, width: 2),
         ),
         child: Center(
           child: Text(
             hintText,
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 26,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1),
           ),
