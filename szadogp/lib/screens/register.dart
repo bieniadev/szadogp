@@ -19,6 +19,7 @@ class RegisterScreen extends ConsumerWidget {
     signUserIn(WidgetRef ref) {
       print('Login: ${usernameController.text}');
       print('Password: ${passwordController.text}');
+      print('Email: ${emailController.text}');
 
       //set current screen to home;
       ref.read(currentScreenProvider.notifier).state = const HomeScreen();
@@ -69,8 +70,7 @@ class RegisterScreen extends ConsumerWidget {
 
                 // create account click text
                 GestureDetector(
-                  onTap: () => ref.read(currentScreenProvider.notifier).state =
-                      const LoginScreen(),
+                  onTap: () => ref.read(currentScreenProvider.notifier).state = const LoginScreen(),
                   child: const Text(
                     'Have account? Log in',
                     style: TextStyle(color: Colors.white70),
