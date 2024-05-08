@@ -19,10 +19,11 @@ class InputTextfield extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         decoration: InputDecoration(
-          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor)),
-          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Theme.of(context).primaryColor.withOpacity(0.5))),
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Theme.of(context).primaryColor)),
+          enabledBorder: const OutlineInputBorder(
+              borderSide: BorderSide(color: Color.fromARGB(255, 96, 96, 96))),
           fillColor: Theme.of(context).primaryColor.withOpacity(0.5),
-          filled: true,
           hintText: hintText,
           hintStyle: const TextStyle(color: Colors.white70),
         ),
