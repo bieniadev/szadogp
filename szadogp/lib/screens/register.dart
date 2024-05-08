@@ -32,8 +32,9 @@ class RegisterScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //jakiś img/ikona ?
-                const SizedBox(height: 120),
+                const SizedBox(height: 100),
+                Image.asset('assets/images/logo.png'),
+                const SizedBox(height: 40),
                 const Text('Elo mordziaty, register swoj daj', style: TextStyle(color: Colors.white70)),
                 const SizedBox(height: 40),
 
