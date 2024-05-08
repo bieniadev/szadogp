@@ -20,7 +20,7 @@ class HomeScreen extends ConsumerWidget {
         child: Column(
           children: [
             const UserPanel(),
-            const SizedBox(height: 250),
+            const SizedBox(height: 150),
             Image.asset('assets/images/logo.png'),
             const SizedBox(height: 60),
             const Spacer(),
