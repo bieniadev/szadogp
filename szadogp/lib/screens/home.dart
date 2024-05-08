@@ -24,6 +24,8 @@ class HomeScreen extends ConsumerWidget {
             Image.asset('assets/images/logo.png'),
             const SizedBox(height: 60),
             const Spacer(),
+            //wyslij request do
+            //select game
             ActionButton(
                 hintText: 'STWÓRZ GRĘ',
                 onTap: () {

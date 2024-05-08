@@ -19,6 +19,9 @@ class LoginScreen extends ConsumerWidget {
 
     //sign in user method
     signUserIn(WidgetRef ref) {
+      //unfocus keyboard
+      FocusManager.instance.primaryFocus?.unfocus();
+
       print('Login: ${emailController.text}');
       print('Password: ${passwordController.text}');
 
@@ -26,8 +29,20 @@ class LoginScreen extends ConsumerWidget {
       ref.read(passInputProvider.notifier).state = passwordController.text;
       ref.read(emailInputProvider.notifier).state = emailController.text;
 
-      //set current screen to home;
-      ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+      final test = ref.watch(loginUserProvider);
+      test.when(
+        data: (userResponse) {
+          String userToken = userResponse;
+          //set current screen to home;
+          //zapisz do zmienej lokalnej userToken ok?
+          print(userToken);
+          ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+        },
+        error: (err, s) {
+          print(err);
+        },
+        loading: () => print('kys'),
+      );
     }
 
     return Scaffold(
@@ -67,8 +82,7 @@ class LoginScreen extends ConsumerWidget {
 
                 // create account click text
                 GestureDetector(
-                  onTap: () => ref.read(currentScreenProvider.notifier).state =
-                      const RegisterScreen(),
+                  onTap: () => ref.read(currentScreenProvider.notifier).state = const RegisterScreen(),
                   child: const Text(
                     'Don\'t have account? Sign in',
                     style: TextStyle(color: Colors.white70),
