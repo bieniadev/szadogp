@@ -37,11 +37,10 @@ class LoginScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 100),
+                //logo
+                const SizedBox(height: 150),
                 Image.asset('assets/images/logo.png'),
-                const SizedBox(height: 40),
-                const Text('Elo mordziaty, sprawdzaj swoje staty!', style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 40),
+                const SizedBox(height: 150),
 
                 //login input
                 InputTextfield(
@@ -59,24 +58,22 @@ class LoginScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // create account text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    GestureDetector(
-                      onTap: () => ref.read(currentScreenProvider.notifier).state = const RegisterScreen(),
-                      child: const Text('Jakiś register zółtodziobie?'),
-                    ),
-                  ]),
-                ),
-                const SizedBox(height: 30),
-
                 //sign in button
                 SubmitButton(
                   onTap: () => signUserIn(ref),
-                  hintText: 'Zaloguj się',
+                  hintText: 'Login',
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
+
+                // create account click text
+                GestureDetector(
+                  onTap: () => ref.read(currentScreenProvider.notifier).state =
+                      const RegisterScreen(),
+                  child: const Text(
+                    'Don\'t have account? Sign in',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
               ],
             ),
           ),

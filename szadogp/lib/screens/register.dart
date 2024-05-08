@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
@@ -22,7 +21,7 @@ class RegisterScreen extends ConsumerWidget {
       print('Password: ${passwordController.text}');
 
       //set current screen to home;
-      //   ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+      ref.read(currentScreenProvider.notifier).state = const HomeScreen();
     }
 
     return Scaffold(
@@ -32,11 +31,10 @@ class RegisterScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 100),
+                //logo
+                const SizedBox(height: 150),
                 Image.asset('assets/images/logo.png'),
-                const SizedBox(height: 40),
-                const Text('Elo mordziaty, register swoj daj', style: TextStyle(color: Colors.white70)),
-                const SizedBox(height: 40),
+                const SizedBox(height: 150),
 
                 //login input
                 InputTextfield(
@@ -62,24 +60,22 @@ class RegisterScreen extends ConsumerWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // create account text
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    GestureDetector(
-                      onTap: () => ref.read(currentScreenProvider.notifier).state = const LoginScreen(),
-                      child: const Text('Koxówa mordo dawaj login'),
-                    ),
-                  ]),
-                ),
-                const SizedBox(height: 30),
-
                 //sign in button
                 SubmitButton(
                   onTap: () => signUserIn(ref),
-                  hintText: 'Zarejestruj się',
+                  hintText: 'Create account',
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 40),
+
+                // create account click text
+                GestureDetector(
+                  onTap: () => ref.read(currentScreenProvider.notifier).state =
+                      const LoginScreen(),
+                  child: const Text(
+                    'Have account? Log in',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
               ],
             ),
           ),
