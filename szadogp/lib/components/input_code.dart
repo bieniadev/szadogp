@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CodeInput extends ConsumerWidget {
   const CodeInput(
@@ -14,6 +15,7 @@ class CodeInput extends ConsumerWidget {
       child: TextField(
         controller: controller,
         onChanged: onChanged,
+        textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(100),
@@ -31,11 +33,27 @@ class CodeInput extends ConsumerWidget {
           labelStyle: const TextStyle(fontSize: 30, color: Colors.white),
           floatingLabelAlignment: FloatingLabelAlignment.center,
           floatingLabelBehavior: FloatingLabelBehavior.always,
-          label: const Text('PODAJ KOD'),
+          label: Text(
+            'PODAJ KOD',
+            style: GoogleFonts.sigmarOne(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+              shadows: <Shadow>[
+                const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black),
+                const Shadow(offset: Offset(1.5, -1.5), color: Colors.black),
+                const Shadow(offset: Offset(1.5, 1.5), color: Colors.black),
+                const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black),
+              ],
+            ),
+          ),
         ),
         autocorrect: false,
-        style: const TextStyle(
-            color: Colors.white, fontSize: 30, letterSpacing: 25),
+        style: GoogleFonts.rubik(
+            color: Colors.white,
+            fontSize: 30,
+            letterSpacing: 25,
+            fontWeight: FontWeight.w600),
         maxLength: 6,
         showCursor: false,
       ),

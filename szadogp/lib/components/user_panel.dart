@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/screens/user_stats.dart';
 
 class UserPanel extends StatelessWidget {
@@ -19,16 +20,18 @@ class UserPanel extends StatelessWidget {
               bottomLeft: Radius.circular(50.0),
               bottomRight: Radius.circular(50.0)),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(25.0),
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 30,
               ),
-              Text('USERNAME', style: TextStyle(fontSize: 22)),
-              SizedBox(width: 60)
+              Text('USERNAME',
+                  style: GoogleFonts.comicNeue(
+                      fontSize: 26, fontWeight: FontWeight.bold)),
+              const SizedBox(width: 60)
             ],
           ),
         ),

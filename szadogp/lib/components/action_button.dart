@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ActionButton extends StatelessWidget {
   const ActionButton({super.key, required this.onTap, required this.hintText});
@@ -24,11 +25,17 @@ class ActionButton extends StatelessWidget {
         child: Center(
           child: Text(
             hintText,
-            style: const TextStyle(
-                color: Colors.white,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1),
+            style: GoogleFonts.sigmarOne(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+              shadows: <Shadow>[
+                const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black),
+                const Shadow(offset: Offset(1.5, -1.5), color: Colors.black),
+                const Shadow(offset: Offset(1.5, 1.5), color: Colors.black),
+                const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black),
+              ],
+            ),
           ),
         ),
       ),
