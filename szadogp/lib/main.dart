@@ -9,10 +9,10 @@ import 'package:szadogp/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Hive.initFlutter();
+  // await Hive.initFlutter();
 
   // ignore: unused_local_variable
-  Box<String> box = await Hive.openBox('token');
+  // Box<String> box = await Hive.openBox('token');
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) => runApp(const ProviderScope(child: App())));
@@ -23,14 +23,14 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final localUserToken = Hive.box('token');
-    print('USERTOKEN FROM LOCAL STORAGE: ${ref.read(userTokenProvider)}');
-    String localToken = localUserToken.get('token');
+    // final localUserToken = Hive.box('token');
+    // print('USERTOKEN FROM LOCAL STORAGE: ${ref.read(userTokenProvider)}');
+    // String localToken = localUserToken.get('token');
 
-    if (localToken != '') {
-      ref.read(userTokenProvider.notifier).state = localToken;
-      print('TOKEN PROVIDER: ${ref.read(userTokenProvider.notifier).state}');
-    }
+    // if (localToken != '') {
+    //   ref.read(userTokenProvider.notifier).state = localToken;
+    //   print('TOKEN PROVIDER: ${ref.read(userTokenProvider.notifier).state}');
+    // }
 
     return MaterialApp(
         title: 's.z.a.do gp',

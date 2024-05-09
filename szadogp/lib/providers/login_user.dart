@@ -5,7 +5,11 @@ final emailInputProvider = StateProvider<String>((ref) => '');
 final passInputProvider = StateProvider<String>((ref) => '');
 
 final loginUserProvider = FutureProvider<String>((ref) async {
-  //sprobowac dodac await po return?
-  return ref.watch(apiServicesProvider).loginCredentials(
-      ref.read(emailInputProvider), ref.read(passInputProvider));
+  //return ref.watch(apiServicesProvider).loginCredentials(ref.read(emailInputProvider), ref.read(passInputProvider));
+  // final response = await ref.watch(apiServicesProvider).loginCredentials(
+  //     ref.read(emailInputProvider), ref.read(passInputProvider));
+  // return response;
+  return ref
+      .watch(apiServicesProvider)
+      .loginCredentials('kuba.bienia@gmail.com', 'Password1!as');
 });

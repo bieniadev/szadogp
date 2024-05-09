@@ -6,6 +6,7 @@ import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/login_user.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/register.dart';
+import 'package:szadogp/services/services.dart';
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -17,7 +18,7 @@ class LoginScreen extends ConsumerWidget {
     final passwordController = TextEditingController();
 
     //sign in user method
-    signUserIn(WidgetRef ref) {
+    signUserIn(WidgetRef ref) async {
       //unfocus keyboard
       FocusManager.instance.primaryFocus?.unfocus();
 
@@ -29,21 +30,25 @@ class LoginScreen extends ConsumerWidget {
       ref.read(emailInputProvider.notifier).state = emailController.text;
 
       // call request
-      final userData = ref.watch(loginUserProvider);
+      // final userData = ref.watch(loginUserProvider);
+
+      // sprobowac ta metoda
+      // final String response = await ApiServices().loginCredentials(emailController.text, passwordController.text);
+      // print(response);
+
       // userData.whenData((value) => print(value));
-      userData.when(data: (userResponse) {
-        String userToken = userResponse;
-        print(
-            'Twoj token: $userToken'); //zapisz do zmienej lokalnej userToken ok?
-        print(ref.read(currentScreenProvider.notifier).state);
-        //set current screen to home;
-        ref.read(currentScreenProvider.notifier).state = const HomeScreen();
-        print(ref.read(currentScreenProvider.notifier).state);
-      }, error: (err, s) {
-        print('$err');
-      }, loading: () {
-        print('laduje');
-      });
+      // userData.when(data: (userResponse) {
+      //   String userToken = userResponse;
+      //   print('Twoj token: $userToken');
+      //   print(ref.read(currentScreenProvider.notifier).state);
+      //   //set current screen to home;
+      //   ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+      //   print(ref.read(currentScreenProvider.notifier).state);
+      // }, error: (err, s) {
+      //   print('$err');
+      // }, loading: () {
+      //   print('laduje');
+      // });
     }
 
     return Scaffold(
