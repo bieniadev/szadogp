@@ -50,7 +50,6 @@ class ApiServices {
     if (response.statusCode == 200) {
       //   print(response.body);
       final Map<String, dynamic> result = jsonDecode(response.body);
-      print(result);
       return result;
     } else {
       throw Exception(response.reasonPhrase);
@@ -58,15 +57,47 @@ class ApiServices {
   }
 
   //get games
-  Future<Map<String, dynamic>> getGamesInfo() async {
+  Future<List<dynamic>> getGamesInfo() async {
     final token = await Hive.box('user-token').get(1);
     final uri = Uri.parse('$baseUrl/api/board-games');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
-      print(response.body);
+      final List<dynamic> result = jsonDecode(response.body);
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //create room
+  Future<Map<String, dynamic>> createGame(String boardgameId) async {
+    final token = await Hive.box('user-token').get(1);
+    Map<String, dynamic> request = {
+      'boardGameId': boardgameId,
+    };
+    final uri = Uri.parse('$baseUrl/api/game-manager/create-game');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    Response response = await post(uri, headers: requestHeaders, body: request);
+    if (response.statusCode == 201) {
       final Map<String, dynamic> result = jsonDecode(response.body);
-      print(result);
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //join room
+  Future<Map<String, dynamic>> joinGame(String boardgameId) async {
+    final token = await Hive.box('user-token').get(1);
+    Map<String, dynamic> request = {
+      'boardGameId': boardgameId,
+    };
+    final uri = Uri.parse('$baseUrl/api/game-manager/create-game');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    Response response = await post(uri, headers: requestHeaders, body: request);
+    if (response.statusCode == 201) {
+      final Map<String, dynamic> result = jsonDecode(response.body);
       return result;
     } else {
       throw Exception(response.reasonPhrase);

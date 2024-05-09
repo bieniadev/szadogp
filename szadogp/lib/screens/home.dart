@@ -10,7 +10,6 @@ import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/login.dart';
 import 'package:szadogp/screens/select_game.dart';
-import 'package:szadogp/services/services.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});

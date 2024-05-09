@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
-import 'package:szadogp/providers/user_token.dart';
-import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/login.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -15,8 +13,8 @@ class RegisterScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // reference for local db
-    final dbRef = Hive.box('user-token');
-    String dbToken = dbRef.get(1) ?? '';
+    // final dbRef = Hive.box('user-token');
+    // String dbToken = dbRef.get(1) ?? '';
 
     // controlers for texfield inputs
     final usernameController = TextEditingController();
@@ -25,10 +23,6 @@ class RegisterScreen extends ConsumerWidget {
 
     //regiser user method
     registerUser(WidgetRef ref) async {
-      print('Email: ${emailController.text}');
-      print('Password: ${passwordController.text}');
-      print('Username: ${usernameController.text}');
-
       //read inputs from controlers
       final String password = passwordController.text;
       final String email = emailController.text;
