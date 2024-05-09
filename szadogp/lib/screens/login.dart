@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
@@ -25,24 +24,26 @@ class LoginScreen extends ConsumerWidget {
       print('Login: ${emailController.text}');
       print('Password: ${passwordController.text}');
 
-      //kod ktory wysyła do api moj login i haslo (zadanie)
+      //update providers status (email, pass)
       ref.read(passInputProvider.notifier).state = passwordController.text;
       ref.read(emailInputProvider.notifier).state = emailController.text;
 
-      final test = ref.watch(loginUserProvider);
-      test.when(
-        data: (userResponse) {
-          String userToken = userResponse;
-          //set current screen to home;
-          //zapisz do zmienej lokalnej userToken ok?
-          print(userToken);
-          ref.read(currentScreenProvider.notifier).state = const HomeScreen();
-        },
-        error: (err, s) {
-          print(err);
-        },
-        loading: () => print('kys'),
-      );
+      // call request
+      final userData = ref.watch(loginUserProvider);
+      // userData.whenData((value) => print(value));
+      userData.when(data: (userResponse) {
+        String userToken = userResponse;
+        print(
+            'Twoj token: $userToken'); //zapisz do zmienej lokalnej userToken ok?
+        print(ref.read(currentScreenProvider.notifier).state);
+        //set current screen to home;
+        ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+        print(ref.read(currentScreenProvider.notifier).state);
+      }, error: (err, s) {
+        print('$err');
+      }, loading: () {
+        print('laduje');
+      });
     }
 
     return Scaffold(
@@ -82,7 +83,8 @@ class LoginScreen extends ConsumerWidget {
 
                 // create account click text
                 GestureDetector(
-                  onTap: () => ref.read(currentScreenProvider.notifier).state = const RegisterScreen(),
+                  onTap: () => ref.read(currentScreenProvider.notifier).state =
+                      const RegisterScreen(),
                   child: const Text(
                     'Don\'t have account? Sign in',
                     style: TextStyle(color: Colors.white70),

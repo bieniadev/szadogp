@@ -1,19 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/input_code.dart';
 import 'package:szadogp/components/user_panel.dart';
-import 'package:szadogp/providers/login_user.dart';
 import 'package:szadogp/screens/select_game.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // final userProvider = ref.watch(loginUserProvider);
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
-    final codeController = TextEditingController();
+final _codeController = TextEditingController();
+bool _isCodeFull = false;
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    void swapButtonsHandler(value) {
+      if (value.length == 6) {
+        setState(() {
+          _isCodeFull = true;
+        });
+      } else if (value.length < 6 && _isCodeFull == true) {
+        setState(() {
+          _isCodeFull = false;
+        });
+      }
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -24,16 +38,27 @@ class HomeScreen extends ConsumerWidget {
             Image.asset('assets/images/logo.png'),
             const SizedBox(height: 60),
             const Spacer(),
-            //select game
-            ActionButton(
-                hintText: 'STWÓRZ GRĘ',
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SelectGameScreen(),
-                  ));
-                }),
+            //create game / join game buttons
+            !_isCodeFull
+                ? ActionButton(
+                    hintText: 'STWÓRZ GRĘ',
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const SelectGameScreen(),
+                      ));
+                    })
+                : ActionButton(
+                    hintText: 'DOŁĄCZ DO GRY',
+                    onTap: () {
+                      // kod dolaczajacy do gry i laczy sie z api
+                    },
+                  ),
             const Spacer(),
-            CodeInput(controller: codeController),
+            //6 digit code input for join
+            CodeInput(
+              controller: _codeController,
+              onChanged: swapButtonsHandler,
+            ),
             const SizedBox(height: 40),
           ],
         ),
@@ -41,16 +66,3 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 }
-
-
-
-// userProvider.when(
-//   data: (userResponse) {
-//     String userToken = userResponse;
-//     return Text('Twój poufny token: $userToken');
-//   },
-//   error: (err, s) => Text(
-//     err.toString(),
-//   ),
-//   loading: (() => const CircularProgressIndicator()),
-// )

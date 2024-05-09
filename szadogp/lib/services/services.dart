@@ -7,17 +7,7 @@ class ApiServices {
   //api link
   String baseUrl = 'https://szadogp-production.up.railway.app';
 
-//   Future<List<UserData>> getCredentials() async {
-//     Response response = await get(Uri.parse('https://reqres.in/api/users?page=2'));
-//     if (response.statusCode == 200) {
-//       //decode source code
-//       final List result = jsonDecode(response.body)['data'];
-//       return result.map((e) => UserData.fromJson(e)).toList();
-//     } else {
-//       throw Exception(response.reasonPhrase);
-//     }
-//   }
-
+  //login
   Future<String> loginCredentials(String email, String pass) async {
     Map<String, dynamic> request = {
       'email': email,
@@ -27,8 +17,26 @@ class ApiServices {
     final response = await post(uri, body: request);
     if (response.statusCode == 201) {
       final String result = jsonDecode(response.body)['accessToken'];
-      print('Token: $result');
+
       //to do: zapisac token w pamieci lokalnej urządzenia = e mati?
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //register
+  Future<String> registerCredentials(
+      String email, String pass, String username) async {
+    Map<String, dynamic> request = {
+      'email': email,
+      'password': pass,
+      'username': username,
+    };
+    final uri = Uri.parse('$baseUrl/api/auth/register');
+    final response = await post(uri, body: request);
+    if (response.statusCode == 201) {
+      final String result = jsonDecode(response.body)['accessToken'];
       return result;
     } else {
       throw Exception(response.reasonPhrase);
@@ -36,4 +44,4 @@ class ApiServices {
   }
 }
 
-final userProvider = Provider<ApiServices>((ref) => ApiServices());
+final apiServicesProvider = Provider<ApiServices>((ref) => ApiServices());
