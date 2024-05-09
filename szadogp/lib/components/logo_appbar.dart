@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const LogoAppbar({
-    super.key,
-  });
+  const LogoAppbar({super.key});
 
   @override
   Widget build(BuildContext context) {
