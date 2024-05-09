@@ -72,7 +72,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                         // kod dolaczajacy do gry i laczy sie z api
                         try {
-                          final lobbyData = await ApiServices().joinGame(_codeController.text);
+                          final lobbyData = await ApiServices().joinGame(_codeController.text.toUpperCase());
                           ref.read(lobbyDataProvider.notifier).state = lobbyData;
                           ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
                         } catch (err) {

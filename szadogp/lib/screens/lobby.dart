@@ -32,7 +32,9 @@ class LobbyScreen extends ConsumerWidget {
         child: Column(
           children: [
             Text(lobbyData['boardGameId']['name']),
+            const SizedBox(height: 20),
             Image.network(lobbyData['boardGameId']['imageUrl']),
+            const SizedBox(height: 20),
             ActionButton(
               onTap: () {
                 //zrobic start gry ok?
@@ -40,22 +42,34 @@ class LobbyScreen extends ConsumerWidget {
               },
               hintText: 'START',
             ),
-            const Row(
+            const SizedBox(height: 20),
+            Row(
               children: [
-                Text('PLAYERS'),
-                Spacer(),
-                Text('GROUP'),
+                Text('PLAYERS', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
+                const Spacer(),
+                Text('GROUP', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
               ],
             ),
+            const SizedBox(height: 10),
             Expanded(
               child: ListView.builder(
                 itemCount: lobbyData['users'].length,
                 itemBuilder: (context, index) => Card(
                   color: Theme.of(context).primaryColor.withOpacity(0.5),
-                  child: Text(
-                    lobbyData['users'][index]['username'],
-                    style: GoogleFonts.rubik(),
-                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.all(6),
+                      child: ListTile(
+                        leading: const CircleAvatar(
+                          radius: 30,
+                          child: Icon(Icons.account_circle_rounded, size: 60, color: Colors.black38),
+                        ),
+                        title: Text(
+                          lobbyData['users'][index]['username'],
+                          style: GoogleFonts.rubik(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                        subtitle: const Text('isadmin?', style: TextStyle(color: Colors.red)),
+                        trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
+                      )),
                 ),
               ),
             ),
