@@ -10,6 +10,7 @@ import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/login.dart';
 import 'package:szadogp/screens/select_game.dart';
+import 'package:szadogp/services/services.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -22,14 +23,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _codeController = TextEditingController();
   bool _isCodeFull = false;
   final _dbRef = Hive.box('user-token');
-  String _userToken = '';
+// usertoken jak potrzebny to uncoment
+//   String _userToken = '';
 
-  @override
-  void initState() {
-    super.initState();
+//   @override
+//   void initState() {
+//     super.initState();
 
-    _userToken = ref.read(userTokenProvider);
-  }
+//   }
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
-import 'package:szadogp/providers/login_user.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/register.dart';

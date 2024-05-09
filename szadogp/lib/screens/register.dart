@@ -4,7 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
-import 'package:szadogp/providers/register_user.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/login.dart';
@@ -26,27 +25,30 @@ class RegisterScreen extends ConsumerWidget {
 
     //regiser user method
     registerUser(WidgetRef ref) async {
-      print('Login: ${usernameController.text}');
-      print('Password: ${passwordController.text}');
       print('Email: ${emailController.text}');
+      print('Password: ${passwordController.text}');
+      print('Username: ${usernameController.text}');
 
       //read inputs from controlers
-      final password = passwordController.text;
-      final email = emailController.text;
-      final username = usernameController.text;
+      final String password = passwordController.text;
+      final String email = emailController.text;
+      final String username = usernameController.text;
 
       try {
         //call request
         final response = await ApiServices().registerCredentials(email, password, username);
 
-        print('RESPONSE $response');
-        // if db token is empty > set to localdb AND provider token from response
-        if (dbToken == '') {
-          ref.read(userTokenProvider.notifier).state = response;
-          dbRef.put(1, response);
+        if (response) {
+          // ignore: use_build_context_synchronously
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 5),
+            content: Text('Succesfully created account!,'),
+            backgroundColor: Colors.green,
+          ));
+
+          //set current screen to loginscreen;
+          ref.read(currentScreenProvider.notifier).state = const LoginScreen();
         }
-        //set current screen to home;
-        ref.read(currentScreenProvider.notifier).state = const HomeScreen();
       } catch (err) {
         // ignore: use_build_context_synchronously
         return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
