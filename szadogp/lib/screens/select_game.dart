@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:szadogp/components/logo_appbar.dart';
 
 class SelectGameScreen extends ConsumerWidget {
   const SelectGameScreen({super.key});
@@ -9,8 +10,21 @@ class SelectGameScreen extends ConsumerWidget {
     // final userData = ref.watch(loginUserProvider);
 
     return Scaffold(
-      appBar: AppBar(),
-      body: const Center(child: Text('Lista z wyborem gier')),
+      appBar: const LogoAppbar(),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: ListView.builder(
+          itemCount: 9,
+          itemBuilder: (context, index) => Card(
+            color: Colors.grey,
+            child: Container(
+              height: 100,
+              padding: const EdgeInsets.all(30),
+              child: Text('Gra ${index + 1}'),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
