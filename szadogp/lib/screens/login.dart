@@ -21,21 +21,20 @@ class LoginScreen extends ConsumerWidget {
     // controlers for texfield inputs
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
-    // reference for local db
 
-    print('AKTUALNY TOKEN: $dbToken');
     //sign in user method
     signUserIn(WidgetRef ref) async {
       //unfocus keyboard
       FocusManager.instance.primaryFocus?.unfocus();
 
-      //update providers status (email, pass)
-      ref.read(passInputProvider.notifier).state = passwordController.text;
-      ref.read(emailInputProvider.notifier).state = emailController.text;
+      //read inputs from controlers
+      final password = passwordController.text;
+      final email = emailController.text;
 
       try {
         //call request
-        final String response = await ApiServices().loginCredentials(emailController.text, passwordController.text);
+        final String response = await ApiServices().loginCredentials(email, password);
+
         // if db token is empty > set to localdb AND provider token from response
         if (dbToken == '') {
           ref.read(userTokenProvider.notifier).state = response;
@@ -44,7 +43,12 @@ class LoginScreen extends ConsumerWidget {
         //set current screen to home;
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
       } catch (err) {
-        return Exception(err);
+        // ignore: use_build_context_synchronously
+        return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 5),
+          content: Text('$err'),
+          backgroundColor: Colors.red,
+        ));
       }
     }
 

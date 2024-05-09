@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -25,7 +27,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // "ref" can be used in all life-cycles of a StatefulWidget.
+
     _userToken = ref.read(userTokenProvider);
   }
 
@@ -43,7 +45,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    print('TOKEN Z PROVIDERA: $_userToken');
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -69,14 +70,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         FocusManager.instance.primaryFocus?.unfocus();
                         if (_codeController.text.toLowerCase() == 'czytaj') {
                           String localToken = ref.read(userTokenProvider);
-                          print('wyswietlono TOKEN z lokalnej bazy: $localToken');
+                          log('wyswietlono TOKEN z lokalnej bazy: $localToken');
                         }
                         if (_codeController.text.toLowerCase() == 'delete') {
-                          //wylogowanie?
+                          //wylogowanie? przykladowy kod
                           _dbRef.delete(1);
                           ref.read(userTokenProvider.notifier).state = '';
                           ref.read(currentScreenProvider.notifier).state = const LoginScreen();
-                          print('Usunieto TOKEN z lokalnej bazy!');
                         }
 
                         // kod dolaczajacy do gry i laczy sie z api
