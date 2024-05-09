@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/input_code.dart';
 import 'package:szadogp/components/user_panel.dart';
@@ -13,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 
 final _codeController = TextEditingController();
 bool _isCodeFull = false;
+final _localUserToken = Hive.box('token');
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
@@ -50,6 +52,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 : ActionButton(
                     hintText: 'DOŁĄCZ DO GRY',
                     onTap: () {
+                      if (_codeController.text == 'secret' ||
+                          _codeController.text == 'SECRET') {
+                        _localUserToken.put(
+                            1, 'gie3tm4oaaigmkaKAOpeo3920J8382');
+                        print('dodano TOKEN do lokalnej bazy');
+                      }
+                      if (_codeController.text == 'czytaj' ||
+                          _codeController.text == 'CZYTAJ') {
+                        String localToken = _localUserToken.get(1);
+                        print('wyswietlono TOKEN z lokalnej bazy: $localToken');
+                      }
                       // kod dolaczajacy do gry i laczy sie z api
                     },
                   ),
