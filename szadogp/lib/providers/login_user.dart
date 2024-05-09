@@ -5,6 +5,7 @@ final emailInputProvider = StateProvider<String>((ref) => '');
 final passInputProvider = StateProvider<String>((ref) => '');
 
 final loginUserProvider = FutureProvider<String>((ref) async {
+  //sprobowac dodac await po return?
   return ref.watch(apiServicesProvider).loginCredentials(
       ref.read(emailInputProvider), ref.read(passInputProvider));
 });
