@@ -88,15 +88,16 @@ class ApiServices {
   }
 
   //join room
-  Future<Map<String, dynamic>> joinGame(String boardgameId) async {
+  Future<Map<String, dynamic>> joinGame(String code) async {
     final token = await Hive.box('user-token').get(1);
     Map<String, dynamic> request = {
-      'boardGameId': boardgameId,
+      'code': code,
     };
-    final uri = Uri.parse('$baseUrl/api/game-manager/create-game');
+    final uri = Uri.parse('$baseUrl/api/game-manager/join-game');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
-    Response response = await post(uri, headers: requestHeaders, body: request);
-    if (response.statusCode == 201) {
+    Response response = await put(uri, headers: requestHeaders, body: request);
+
+    if (response.statusCode == 200) {
       final Map<String, dynamic> result = jsonDecode(response.body);
       return result;
     } else {

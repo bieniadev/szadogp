@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const LogoAppbar({super.key});
+  const LogoAppbar({super.key, this.customExitButton});
+  final Widget? customExitButton;
 
   @override
   Widget build(BuildContext context) {
@@ -9,10 +10,15 @@ class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
       title: Image.asset('assets/images/logo.png', height: 30),
       centerTitle: true,
       elevation: 5,
+      leading: customExitButton,
       backgroundColor: const Color.fromARGB(255, 60, 52, 77),
       iconTheme: const IconThemeData(color: Colors.white, size: 30),
       flexibleSpace: Container(
         decoration: BoxDecoration(
+          borderRadius: const BorderRadius.only(
+            bottomRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+          ),
           gradient: LinearGradient(
               stops: const [0.05, 0.55],
               begin: Alignment.topCenter,
