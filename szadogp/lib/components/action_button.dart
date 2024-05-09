@@ -15,10 +15,7 @@ class ActionButton extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         margin: const EdgeInsets.symmetric(horizontal: 30.0),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(colors: [
-            Color.fromARGB(255, 160, 50, 199),
-            Color.fromARGB(255, 73, 19, 128)
-          ]),
+          gradient: const LinearGradient(colors: [Color.fromARGB(255, 160, 50, 199), Color.fromARGB(255, 73, 19, 128)]),
           borderRadius: BorderRadius.circular(100),
           border: Border.all(color: Colors.black, width: 2),
         ),
@@ -26,7 +23,7 @@ class ActionButton extends StatelessWidget {
           child: Text(
             hintText,
             style: GoogleFonts.sigmarOne(
-              fontSize: 30,
+              fontSize: 26,
               fontWeight: FontWeight.bold,
               letterSpacing: 1,
               shadows: <Shadow>[

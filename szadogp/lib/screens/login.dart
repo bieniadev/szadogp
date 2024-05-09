@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/login_user.dart';
+import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/register.dart';
 import 'package:szadogp/services/services.dart';
@@ -13,42 +15,37 @@ class LoginScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dbRef = Hive.box('user-token');
+    String dbToken = dbRef.get(1) ?? '';
+
     // controlers for texfield inputs
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    // reference for local db
 
+    print('AKTUALNY TOKEN: $dbToken');
     //sign in user method
     signUserIn(WidgetRef ref) async {
       //unfocus keyboard
       FocusManager.instance.primaryFocus?.unfocus();
 
-      print('Login: ${emailController.text}');
-      print('Password: ${passwordController.text}');
-
       //update providers status (email, pass)
       ref.read(passInputProvider.notifier).state = passwordController.text;
       ref.read(emailInputProvider.notifier).state = emailController.text;
 
-      // call request
-      // final userData = ref.watch(loginUserProvider);
-
-      // sprobowac ta metoda
-      // final String response = await ApiServices().loginCredentials(emailController.text, passwordController.text);
-      // print(response);
-
-      // userData.whenData((value) => print(value));
-      // userData.when(data: (userResponse) {
-      //   String userToken = userResponse;
-      //   print('Twoj token: $userToken');
-      //   print(ref.read(currentScreenProvider.notifier).state);
-      //   //set current screen to home;
-      //   ref.read(currentScreenProvider.notifier).state = const HomeScreen();
-      //   print(ref.read(currentScreenProvider.notifier).state);
-      // }, error: (err, s) {
-      //   print('$err');
-      // }, loading: () {
-      //   print('laduje');
-      // });
+      try {
+        //call request
+        final String response = await ApiServices().loginCredentials(emailController.text, passwordController.text);
+        // if db token is empty > set to localdb AND provider token from response
+        if (dbToken == '') {
+          ref.read(userTokenProvider.notifier).state = response;
+          dbRef.put(1, response);
+        }
+        //set current screen to home;
+        ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+      } catch (err) {
+        return Exception(err);
+      }
     }
 
     return Scaffold(
@@ -88,8 +85,7 @@ class LoginScreen extends ConsumerWidget {
 
                 // create account click text
                 GestureDetector(
-                  onTap: () => ref.read(currentScreenProvider.notifier).state =
-                      const RegisterScreen(),
+                  onTap: () => ref.read(currentScreenProvider.notifier).state = const RegisterScreen(),
                   child: const Text(
                     'Don\'t have account? Sign in',
                     style: TextStyle(color: Colors.white70),
