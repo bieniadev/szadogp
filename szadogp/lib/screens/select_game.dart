@@ -5,6 +5,7 @@ import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/providers/boardgames_data.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
+import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/lobby.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -16,9 +17,12 @@ class SelectGameScreen extends ConsumerWidget {
     //wyslanie kody do api z wybrana gra i po sukcesie stworzenie pokoju i przejscie do jego ekranu
     selectGame(boardgameId) async {
       try {
-        final lobbyData = await ApiServices().createGame(boardgameId);
         //funckja ktora wysyla do providera dane o calym lobby
+        final lobbyData = await ApiServices().createGame(boardgameId);
         ref.read(lobbyDataProvider.notifier).state = lobbyData;
+        //funkcja ktora wysyla do providera dane o aktualnym userze
+        final userInfo = await ApiServices().getUserInfo();
+        ref.read(userInfoProvider.notifier).state = userInfo;
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
         ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
@@ -41,14 +45,12 @@ class SelectGameScreen extends ConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.all(20),
                 child: ListView.builder(
-                    itemCount:
-                        boardgamesList.length, // list.length from data base
+                    itemCount: boardgamesList.length, // list.length from data base
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         //on select game function
                         onTap: () => selectGame(boardgamesList[index]['_id']),
-                        child: ImageRounded(
-                            imageUrl: boardgamesList[index]['imageUrl']),
+                        child: ImageRounded(imageUrl: boardgamesList[index]['imageUrl']),
                       );
                     }),
               );

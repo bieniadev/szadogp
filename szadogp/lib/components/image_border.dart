@@ -17,6 +17,7 @@ class ImageRounded extends StatelessWidget {
         imageUrl,
         fit: BoxFit.cover,
         height: 150,
+        width: double.infinity,
       ),
     );
   }

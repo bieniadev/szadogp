@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UserBanner extends StatelessWidget {
-  const UserBanner({
-    super.key,
-  });
-
+  const UserBanner({super.key, required this.username});
+  final String username;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -39,10 +37,7 @@ class UserBanner extends StatelessWidget {
                   Container(
                     height: 80,
                     width: 80,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        border: Border.all(width: 2, color: Colors.black),
-                        color: Colors.white),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), border: Border.all(width: 2, color: Colors.black), color: Colors.white),
 
                     // child: Image.network(''), zmienna/link do zdj
                     // backgroundImage: ,
@@ -50,21 +45,12 @@ class UserBanner extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Text(
-                      'Nickname', //zmienna repleace
+                      username,
                       style: GoogleFonts.rubik(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
-                        shadows: <Shadow>[
-                          const Shadow(
-                              offset: Offset(-1.5, -1.5), color: Colors.black),
-                          const Shadow(
-                              offset: Offset(1.5, -1.5), color: Colors.black),
-                          const Shadow(
-                              offset: Offset(1.5, 1.5), color: Colors.black),
-                          const Shadow(
-                              offset: Offset(-1.5, 1.5), color: Colors.black)
-                        ],
+                        shadows: <Shadow>[const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black), const Shadow(offset: Offset(1.5, -1.5), color: Colors.black), const Shadow(offset: Offset(1.5, 1.5), color: Colors.black), const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black)],
                       ),
                     ),
                   ),
