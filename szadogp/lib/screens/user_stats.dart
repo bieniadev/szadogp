@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:szadogp/components/user_banner.dart';
+import 'package:szadogp/components/user_banner_appbar.dart';
+import 'package:szadogp/components/user_recentlygames.dart';
+import 'package:szadogp/components/user_stats.dart';
 import 'package:szadogp/providers/user_data.dart';
 
 class UserStatsScreen extends ConsumerWidget {
@@ -23,22 +27,19 @@ class UserStatsScreen extends ConsumerWidget {
     //         return Text('$err');
     //       }),
     // );
-    return Scaffold(
-      extendBodyBehindAppBar: true, //? zobaczyc true/false diff (pasek u gory?)
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        leading: IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(
-              Icons.arrow_back_ios_new_rounded,
-              color: Colors.white,
-            )),
-        elevation: 0,
-        title: const Text("Title",
-            style: TextStyle(fontSize: 20, color: Colors.white)),
-      ),
+    return const Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: UserBannerAppbar(),
       body: Column(
-        children: [Text('nick')],
+        children: [
+          //user banner with background
+          UserBanner(),
+          // overal stats user/podsumowanie
+          UserStats(),
+          // SizedBox(height: 200),
+          // lista z recent played grami
+          UserRecentlyGames()
+        ],
       ),
     );
   }
