@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/timer.dart';
+import 'package:szadogp/providers/timer_value.dart';
 
 class RunningGameScreen extends StatelessWidget {
   const RunningGameScreen({super.key});
@@ -15,6 +19,15 @@ class RunningGameScreen extends StatelessWidget {
 
     // final bool isAdmin = lobbyData['creatorId']== ? true : false; // po == dac userInfo[<data>]
     const bool isAdmin = true;
+
+    Duration timerValue = const Duration();
+
+    finishGame(val) {
+      timerValue = val;
+      //zrobic koniec gry ok?
+      print('koniec gierki');
+      print('TimerVALUE: ${timerValue.inSeconds}');
+    }
 
     Map<String, dynamic> lobbyData = {
       'boardGameId': {
@@ -39,25 +52,17 @@ class RunningGameScreen extends StatelessWidget {
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(
           children: [
-            Text(
-              lobbyData['boardGameId']['name'],
-              style: GoogleFonts.rubikMonoOne(
-                  fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+            Text(lobbyData['boardGameId']['name'],
+                style: GoogleFonts.rubikMonoOne(
+                    fontSize: 20, fontWeight: FontWeight.bold)),
             ImageRounded(imageUrl: lobbyData['boardGameId']['imageUrl']),
             const SizedBox(height: 20),
-            const Timer(), //timer
-            const SizedBox(height: 30),
-            isAdmin
-                ? ActionButton(
-                    onTap: () {
-                      //zrobic koniec gry ok?
-                      print('koniec gierki');
-                    },
-                    hintText: 'KONIEC',
-                    hasBorder: false,
-                  )
-                : const SizedBox(height: 0),
+            StopwatchTimer(
+              isAdmin: isAdmin,
+              finishGame: finishGame,
+              totalTime: timerValue,
+            ), //timer
+
             const SizedBox(height: 30),
             Row(
               children: [

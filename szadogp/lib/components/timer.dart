@@ -1,26 +1,68 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
 
-class Timer extends StatefulWidget {
-  const Timer({super.key});
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:szadogp/components/action_button.dart';
+import 'package:szadogp/providers/timer_value.dart';
+
+class StopwatchTimer extends ConsumerStatefulWidget {
+  const StopwatchTimer(
+      {super.key,
+      required this.totalTime,
+      required this.finishGame,
+      required this.isAdmin});
+
+  final Duration totalTime;
+  final Function(Duration val) finishGame;
+  final bool isAdmin;
 
   @override
-  State<Timer> createState() => _TimerState();
+  ConsumerState<StopwatchTimer> createState() => _TimerState();
 }
 
-String timerValue = '00:21:12';
+class _TimerState extends ConsumerState<StopwatchTimer> {
+  String _timerValue = '';
+  Duration _duration = const Duration();
 
-class _TimerState extends State<Timer> {
+  void startTimer() {
+    Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {
+        final seconds = _duration.inSeconds + 1;
+
+        _duration = Duration(seconds: seconds);
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    startTimer();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // print(_duration.inSeconds); // ile sekund zeby zapisac do bazy
+    _timerValue =
+        '${(_duration.inHours.toString()).padLeft(2, '0')}:${(_duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(_duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
     return Column(
       children: [
         Text('CZAS',
             style: GoogleFonts.rubikMonoOne(
                 fontSize: 36, fontWeight: FontWeight.bold)),
-        Text(timerValue,
+        Text(_timerValue,
             style: GoogleFonts.rubikMonoOne(
                 fontSize: 36, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 30),
+        widget.isAdmin
+            ? ActionButton(
+                onTap: () => widget.finishGame(_duration),
+                hintText: 'KONIEC',
+                hasBorder: false,
+              )
+            : const SizedBox(height: 0),
       ],
     );
   }
