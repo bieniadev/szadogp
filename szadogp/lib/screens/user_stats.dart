@@ -36,7 +36,6 @@ class UserStatsScreen extends ConsumerWidget {
           UserBanner(),
           // overal stats user/podsumowanie
           UserStats(),
-          // SizedBox(height: 200),
           // lista z recent played grami
           UserRecentlyGames()
         ],
