@@ -4,11 +4,14 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/login.dart';
 
-final currentScreenProvider = StateProvider<Widget>((ref) {
-  final String localToken = Hive.box('user-token').get(1) ?? '';
-  if (localToken != '') {
-    return const HomeScreen();
-  }
+import 'package:szadogp/screens/user_stats.dart';
 
-  return const LoginScreen();
+final currentScreenProvider = StateProvider<Widget>((ref) {
+  // final String localToken = Hive.box('user-token').get(1) ?? '';
+  // if (localToken != '') {
+  //   return const HomeScreen();
+  // }
+
+  // return const LoginScreen();
+  return const UserStatsScreen();
 });
