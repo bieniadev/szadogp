@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/lobby.dart';
 import 'package:szadogp/screens/login.dart';
+import 'package:szadogp/screens/running_game.dart';
 
 import 'package:szadogp/screens/user_stats.dart';
 
@@ -14,5 +15,5 @@ final currentScreenProvider = StateProvider<Widget>((ref) {
   // }
 
   // return const LoginScreen();
-  return const LobbyScreen();
+  return const RunningGameScreen();
 });

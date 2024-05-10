@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/action_button.dart';
@@ -10,6 +8,7 @@ import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/home.dart';
+import 'package:szadogp/screens/running_game.dart';
 import 'package:szadogp/services/services.dart';
 import 'package:szadogp/components/popup.dart';
 
@@ -77,6 +76,8 @@ class LobbyScreen extends ConsumerWidget {
                     onTap: () {
                       //zrobic start gry ok?
                       print('Start gierki');
+                      ref.read(currentScreenProvider.notifier).state =
+                          const RunningGameScreen();
                     },
                     hintText: 'START',
                     hasBorder: false,
@@ -129,12 +130,12 @@ class LobbyScreen extends ConsumerWidget {
                                     fontSize: 20,
                                     fontWeight: FontWeight.w700),
                               ),
-                              subtitle: Text('ADMIN',
-                                  style: GoogleFonts.rubikMonoOne(
-                                      color: Colors.red[400],
-                                      letterSpacing: 3,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300)),
+                              // subtitle: Text('ADMIN',
+                              //     style: GoogleFonts.rubikMonoOne(
+                              //         color: Colors.red[400],
+                              //         letterSpacing: 3,
+                              //         fontSize: 12,
+                              //         fontWeight: FontWeight.w300)),
                               trailing: const Icon(
                                   Icons.one_x_mobiledata_outlined,
                                   color: Colors.white,
