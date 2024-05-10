@@ -51,6 +51,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               !_isCodeFull
                   ? ActionButton(
                       hintText: 'STWÓRZ GRĘ',
+                      hasBorder: true,
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const SelectGameScreen(),
@@ -58,6 +59,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       })
                   : ActionButton(
                       hintText: 'DOŁĄCZ DO GRY',
+                      hasBorder: true,
                       onTap: () async {
                         //unfocus keyboard
                         FocusManager.instance.primaryFocus?.unfocus();
@@ -67,17 +69,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           //wylogowanie? przykladowy kod
                           _dbRef.delete(1);
                           ref.read(userTokenProvider.notifier).state = '';
-                          ref.read(currentScreenProvider.notifier).state = const LoginScreen();
+                          ref.read(currentScreenProvider.notifier).state =
+                              const LoginScreen();
                         }
 
                         // kod dolaczajacy do gry i laczy sie z api
                         try {
-                          final lobbyData = await ApiServices().joinGame(_codeController.text.toUpperCase());
-                          ref.read(lobbyDataProvider.notifier).state = lobbyData;
-                          ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
+                          final lobbyData = await ApiServices()
+                              .joinGame(_codeController.text.toUpperCase());
+                          ref.read(lobbyDataProvider.notifier).state =
+                              lobbyData;
+                          ref.read(currentScreenProvider.notifier).state =
+                              const LobbyScreen();
                         } catch (err) {
                           // ignore: use_build_context_synchronously
-                          return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          return ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
                             duration: const Duration(seconds: 5),
                             content: Text('$err'),
                             backgroundColor: Colors.red,

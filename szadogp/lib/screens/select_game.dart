@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/providers/boardgames_data.dart';
 import 'package:szadogp/providers/current_screen.dart';
@@ -40,23 +41,14 @@ class SelectGameScreen extends ConsumerWidget {
               return Padding(
                 padding: const EdgeInsets.all(20),
                 child: ListView.builder(
-                    itemCount: boardgamesList.length, // list.length from data base
+                    itemCount:
+                        boardgamesList.length, // list.length from data base
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         //on select game function
                         onTap: () => selectGame(boardgamesList[index]['_id']),
-                        child: Card(
-                          color: Colors.grey,
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                          clipBehavior: Clip.hardEdge,
-                          elevation: 10,
-                          child: Image.network(
-                            boardgamesList[index]['imageUrl'],
-                            fit: BoxFit.cover,
-                            height: 150,
-                          ),
-                        ),
+                        child: ImageRounded(
+                            imageUrl: boardgamesList[index]['imageUrl']),
                       );
                     }),
               );

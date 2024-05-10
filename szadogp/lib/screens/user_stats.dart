@@ -4,7 +4,7 @@ import 'package:szadogp/components/user_banner.dart';
 import 'package:szadogp/components/user_banner_appbar.dart';
 import 'package:szadogp/components/user_recentlygames.dart';
 import 'package:szadogp/components/user_stats.dart';
-import 'package:szadogp/providers/user_data.dart';
+// import 'package:szadogp/providers/user_data.dart';
 
 class UserStatsScreen extends ConsumerWidget {
   const UserStatsScreen({super.key});
