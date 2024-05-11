@@ -36,7 +36,6 @@ class ApiServices {
     if (response.statusCode == 201) {
       return true;
     } else {
-      //   print('RESPONSE: ${response.body}');
       throw Exception(response.reasonPhrase);
     }
   }
@@ -48,7 +47,6 @@ class ApiServices {
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
-      //   print(response.body);
       final Map<String, dynamic> result = jsonDecode(response.body);
       return result;
     } else {
@@ -108,9 +106,7 @@ class ApiServices {
   //delete user from room
   Future<Map<String, dynamic>> deleteUserFromLobby(String userId) async {
     final token = await Hive.box('user-token').get(1);
-    Map<String, dynamic> request = {
-      'userId': userId,
-    };
+    Map<String, dynamic> request = {'userId': userId};
     final uri = Uri.parse('$baseUrl/api/game-manager/???');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await post(uri, headers: requestHeaders, body: request);
@@ -143,15 +139,79 @@ class ApiServices {
     final token = await Hive.box('user-token').get(1);
     final Map<String, dynamic> request = {'groups': groups};
     String encodedBody = json.encode(request);
-    print('ENCODED BODY $encodedBody');
 
     final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/start-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}; //kys Content-Type
     Response response = await put(uri, headers: requestHeaders, body: encodedBody);
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      print('RESULT Z API: $result');
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //finish game in database
+  Future<Map<String, dynamic>> finishGame(String runningGameId) async {
+    final token = await Hive.box('user-token').get(1);
+
+    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/finish-game');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    Response response = await put(uri, headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //close game in database
+  Future<Map<String, dynamic>> closeGame(List<Map<String, dynamic>> ranks, String runningGameId) async {
+    // to do zrobić customowy input na notatke
+    final token = await Hive.box('user-token').get(1);
+    final Map<String, dynamic> request = {'ranking': ranks, 'note': "HUJ RUDY TO ZJEB MATKA GO NIE KOCHA A STARY TO PEDAŁ A JAKBY MIAL SIOSTRE  TO JEGO SIOSTRA BYLA  BY DZIWKA"};
+    String encodedBody = json.encode(request);
+    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/close-game');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}; //kys Content-Type
+    Response response = await put(uri, headers: requestHeaders, body: encodedBody);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //chceck for other players if game started and move then to runningGame screen
+  Future<Map<String, dynamic>> checkIfGameStarted(String runningGameId) async {
+    final token = await Hive.box('user-token').get(1);
+
+    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/check-game-started');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    Response response = await get(uri, headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      return result;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
+  //chceck for other players if game ended and move then to summary screen
+  Future<Map<String, dynamic>> checkIfGameEnded(String runningGameId) async {
+    final token = await Hive.box('user-token').get(1);
+
+    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/check-game-ended');
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    Response response = await get(uri, headers: requestHeaders);
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
       return result;
     } else {
       throw Exception(response.reasonPhrase);

@@ -20,21 +20,16 @@ class RunningGameScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Map<String, dynamic> lobbyData = ref.read(lobbyDataProvider);
-    Map<String, dynamic> userInfo = ref.read(userInfoProvider); //test?? czy dziala porownywanie
+    Map<String, dynamic> userInfo = ref.read(userInfoProvider);
 
-    print('LOBBY INFO: $lobbyData');
-    print('CURRENT USER INFO: $userInfo');
-
-    final bool isAdmin = lobbyData['creatorId'] == userInfo['_id']; // po == dac userInfo[<data>]
+    final bool isAdmin = lobbyData['creatorId'] == userInfo['_id'];
 
     Duration timerValue = const Duration();
 
     finishGame(val) {
       timerValue = val;
-      //zrobic koniec gry ok?
       ref.read(currentScreenProvider.notifier).state = const SummaryScreen();
-      print('koniec gierki');
-      print('TimerVALUE: ${timerValue.inSeconds}');
+      ref.read(timerValueProvider.notifier).state = timerValue;
     }
 
     return Scaffold(
@@ -50,6 +45,7 @@ class RunningGameScreen extends ConsumerWidget {
               isAdmin: isAdmin,
               finishGame: finishGame,
               totalTime: timerValue,
+              gameId: lobbyData['_id'],
             ), //timer
 
             const SizedBox(height: 30),

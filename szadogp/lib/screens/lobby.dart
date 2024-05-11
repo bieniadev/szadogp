@@ -38,7 +38,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           _lobbyData['users'] = _usersList;
         });
         //popup ze dolaczyl ok? :D
-        print('dołączył :D');
       }
     });
   }
@@ -56,8 +55,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
 
     _lobbyId = _lobbyData['_id'];
-
-    print('WIDGET USERS: ${_lobbyData['users']}');
 
     //check for admin
     final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
@@ -120,7 +117,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                           // }
                         })
                       ];
-                      print('FAKE GROUPS: $fakeGroups');
                       try {
                         final Map<String, dynamic> response = await ApiServices().startGame(fakeGroups, _lobbyId);
                         ref.read(runningGameProvider.notifier).state = response;
@@ -133,7 +129,30 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                     hintText: 'START',
                     hasBorder: false,
                   )
-                : const SizedBox(height: 0),
+                : ActionButton(
+                    onTap: () async {
+                      try {
+                        //bambikowy kod dla wpusczania nie admina do gry
+                        final Map<String, dynamic> response = await ApiServices().checkIfGameStarted(_lobbyData['_id']);
+
+                        if (response['redirect']!) {
+                          ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
+                        }
+                        if (!response['redirect']!) {
+                          // ignore: use_build_context_synchronously
+                          return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            duration: Duration(seconds: 5),
+                            content: Text('Gra sie jescze nie zaczeła'),
+                            backgroundColor: Colors.red,
+                          ));
+                        }
+                      } catch (err) {
+                        throw Exception(err);
+                      }
+                    },
+                    hintText: 'CZY KONIEC?',
+                    hasBorder: false,
+                  ),
             const SizedBox(height: 20),
             Row(
               children: [
@@ -162,7 +181,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                 child: Icon(Icons.account_circle_rounded, size: 60, color: Colors.black38),
                               ),
                               title: Text(_lobbyData['users'][index]['username'], style: GoogleFonts.rubik(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
-                              subtitle: isAdmin && _lobbyData['users'][index]['username'] == userInfo['username'] ? Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300)) : const SizedBox(height: 0),
+                              subtitle: isAdmin && _lobbyData['users'][index]['username'] == userInfo['username'] ? Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300)) : SizedBox(height: 0),
                               trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
                             ),
                           ),
