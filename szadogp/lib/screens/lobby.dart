@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -150,7 +151,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                         throw Exception(err);
                       }
                     },
-                    hintText: 'CZY KONIEC?',
+                    hintText: 'CZY START?',
                     hasBorder: false,
                   ),
             const SizedBox(height: 20),
@@ -181,7 +182,17 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                 child: Icon(Icons.account_circle_rounded, size: 60, color: Colors.black38),
                               ),
                               title: Text(_lobbyData['users'][index]['username'], style: GoogleFonts.rubik(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
-                              subtitle: isAdmin && _lobbyData['users'][index]['username'] == userInfo['username'] ? Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300)) : SizedBox(height: 0),
+                              subtitle: Builder(
+                                builder: (context) {
+                                  if (isAdmin && _lobbyData['users'][index]['username'] == userInfo['username']) {
+                                    return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
+                                  }
+                                  if (!isAdmin && _lobbyData['creatorId'] == _lobbyData['users'][index]['_id']) {
+                                    return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
+                                  }
+                                  return const SizedBox(height: 0);
+                                },
+                              ),
                               trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
                             ),
                           ),

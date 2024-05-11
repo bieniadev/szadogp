@@ -75,7 +75,18 @@ class RunningGameScreen extends ConsumerWidget {
                         child: Icon(Icons.account_circle_rounded, size: 60, color: Colors.black38),
                       ),
                       title: Text(lobbyData['users'][index]['username'], style: GoogleFonts.rubik(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
-                      subtitle: isAdmin && lobbyData['users'][index]['username'] == userInfo['username'] ? Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300)) : const SizedBox(height: 0),
+                      subtitle: Builder(
+                        builder: (context) {
+                          //   print(lobbyData['creatorId']);
+                          if (isAdmin && lobbyData['users'][index]['username'] == userInfo['username']) {
+                            return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
+                          }
+                          if (!isAdmin && lobbyData['creatorId'] == lobbyData['users'][index]['_id']) {
+                            return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
+                          }
+                          return const SizedBox(height: 0);
+                        },
+                      ),
                       trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
                     ),
                   ),

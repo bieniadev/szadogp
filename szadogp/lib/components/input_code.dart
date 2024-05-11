@@ -40,7 +40,7 @@ class CodeInput extends ConsumerWidget {
           ),
         ),
         autocorrect: false,
-        style: GoogleFonts.rubik(color: Colors.white, fontSize: 30, letterSpacing: 25, fontWeight: FontWeight.w600),
+        style: GoogleFonts.rubik(color: Colors.white, fontSize: 30, letterSpacing: 20, fontWeight: FontWeight.w600),
         maxLength: 6,
         showCursor: false,
       ),

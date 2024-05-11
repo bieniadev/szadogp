@@ -80,9 +80,7 @@ class SummaryScreen extends ConsumerWidget {
                     //zakonczenie gry i wyslanie podsumowania do bazy
                     try {
                       final result = await ApiServices().closeGame(usersRanks, summaryData['_id']);
-                      print('RESULT: $result');
                     } catch (err) {
-                      print(err);
                       throw Exception(err);
                     }
                     ref.read(currentScreenProvider.notifier).state = const HomeScreen();
