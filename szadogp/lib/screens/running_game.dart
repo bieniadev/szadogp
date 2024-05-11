@@ -1,9 +1,6 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/timer.dart';
@@ -12,7 +9,6 @@ import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/timer_value.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/game_summary.dart';
-import 'package:szadogp/screens/home.dart';
 
 class RunningGameScreen extends ConsumerWidget {
   const RunningGameScreen({super.key});

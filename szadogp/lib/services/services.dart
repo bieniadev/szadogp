@@ -219,7 +219,7 @@ class ApiServices {
   }
 
   //get user stats recentyl player
-  Future<Map<String, dynamic>> getUserStats() async {
+  Future<dynamic> getUserStats() async {
     final token = await Hive.box('user-token').get(1);
 
     final uri = Uri.parse('$baseUrl/api/games/history');

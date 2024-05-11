@@ -6,12 +6,10 @@ import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/select_rank.dart';
 import 'package:szadogp/components/summary_section.dart';
-import 'package:szadogp/components/timer.dart';
 import 'package:szadogp/providers/current_screen.dart';
-import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/summary_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
-import 'package:szadogp/providers/user_data.dart';
+// import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -21,12 +19,12 @@ class SummaryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final Map<String, dynamic> summaryData = ref.read(summaryGameProvider);
-    Map<String, dynamic> userInfo = ref.read(userInfoProvider);
+    // Map<String, dynamic> userInfo = ref.read(userInfoProvider);
     Duration duration = ref.read(timerValueProvider);
     String formattedTimerValue = '${(duration.inHours.toString()).padLeft(2, '0')}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
     TextEditingController noteController = TextEditingController();
 
-    print('KONIEC GRY INFO: $summaryData');
+    // print('KONIEC GRY INFO: $summaryData');
     // print('USERINFO: $userInfo');
 
     // final bool isAdmin = summaryData['creatorId'] == userInfo['_id'];
@@ -71,7 +69,7 @@ class SummaryScreen extends ConsumerWidget {
 
                         final Map<String, dynamic> userInfoMap = {
                           'groupIdentifier': groupNr,
-                          'place': usersAmmount, //poprawic dla kilku id o tej samej grupie
+                          'place': usersAmmount - 1, //poprawic dla kilku id o tej samej grupie
                         };
                         return userInfoMap;
                       })
