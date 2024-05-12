@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -167,64 +166,66 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                   return const SizedBox(height: 0);
                                 },
                               ),
-                              trailing: DropdownButton<int>(
-                                value: _groupValue[index],
-                                items: List.generate(
-                                    5, // to do: przy dynamicznym renderowanu itemow wywala err  zmienna-> _lobbyData['users'].length
-                                    (index) => DropdownMenuItem<int>(
-                                          value: index + 1,
-                                          child: Text('NR: ${index + 1}'),
-                                        )),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _groupValue[index] = value!;
-                                  });
-                                  String userGroupId = _lobbyData['users'][index]['_id'];
-                                  Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
-                                  usersInLobby.add(infoUser);
-                                  Map<String, dynamic> userToRemove = {};
-                                  for (var user in usersInLobby) {
-                                    if (user['id'] == infoUser['id']) {
-                                      userToRemove = user;
-                                      break;
-                                    }
-                                  }
-                                  if (usersInLobby.length > _lobbyData['users'].length) {
-                                    usersInLobby.remove(userToRemove);
-                                  }
+                              trailing: isAdmin
+                                  ? DropdownButton<int>(
+                                      value: _groupValue[index],
+                                      items: List.generate(
+                                          5, // to do: przy dynamicznym renderowanu itemow wywala err  zmienna-> _lobbyData['users'].length
+                                          (index) => DropdownMenuItem<int>(
+                                                value: index + 1,
+                                                child: Text('NR: ${index + 1}'),
+                                              )),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          _groupValue[index] = value!;
+                                        });
+                                        String userGroupId = _lobbyData['users'][index]['_id'];
+                                        Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
+                                        usersInLobby.add(infoUser);
+                                        Map<String, dynamic> userToRemove = {};
+                                        for (var user in usersInLobby) {
+                                          if (user['id'] == infoUser['id']) {
+                                            userToRemove = user;
+                                            break;
+                                          }
+                                        }
+                                        if (usersInLobby.length > _lobbyData['users'].length) {
+                                          usersInLobby.remove(userToRemove);
+                                        }
 
-                                  _usersIdGroups = [];
-                                  for (var user in usersInLobby) {
-                                    if (infoUser['nrGroup'] == user['nrGroup']) {
-                                      _usersIdGroups.add(user['_id']);
-                                    }
-                                  }
-                                  _groups[index] = {
-                                    'groupIdentifier': _groupValue[index],
-                                    'users': _usersIdGroups,
-                                  };
+                                        _usersIdGroups = [];
+                                        for (var user in usersInLobby) {
+                                          if (infoUser['nrGroup'] == user['nrGroup']) {
+                                            _usersIdGroups.add(user['_id']);
+                                          }
+                                        }
+                                        _groups[index] = {
+                                          'groupIdentifier': _groupValue[index],
+                                          'users': _usersIdGroups,
+                                        };
 
-                                  List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
-                                    Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
+                                        List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
+                                          Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
 
-                                    for (var group in groups) {
-                                      int groupIdentifier = group['groupIdentifier'] ?? 0; // to do: przy wybieraniu peirwszy raz grupy group['groupIdentifier'] zwraca null (2 razy przy 2 graczach), zrobic odpowieni handling np kazac wybrac grupy do konca
+                                          for (var group in groups) {
+                                            int groupIdentifier = group['groupIdentifier'] ?? 0; // to do: przy wybieraniu peirwszy raz grupy group['groupIdentifier'] zwraca null (2 razy przy 2 graczach), zrobic odpowieni handling np kazac wybrac grupy do konca
 
-                                      if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
-                                        uniqueGroupsMap[groupIdentifier] = group;
-                                      }
-                                    }
+                                            if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
+                                              uniqueGroupsMap[groupIdentifier] = group;
+                                            }
+                                          }
 
-                                    // Sortowanie mapy według klucza 'groupIdentifier'
-                                    List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
-                                    uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
+                                          // Sortowanie mapy według klucza 'groupIdentifier'
+                                          List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
+                                          uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
 
-                                    return uniqueGroups;
-                                  }
+                                          return uniqueGroups;
+                                        }
 
-                                  _fixedGroups = removeDuplicateGroups(_groups);
-                                },
-                              ),
+                                        _fixedGroups = removeDuplicateGroups(_groups);
+                                      },
+                                    )
+                                  : const SizedBox(height: 0), // to do: dynamiczne wyswietlanie stanu grupy dla nie adminow
                             ),
                           ),
                         ),
