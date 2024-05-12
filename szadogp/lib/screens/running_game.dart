@@ -29,7 +29,9 @@ class RunningGameScreen extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: const LogoAppbar(),
+      appBar: LogoAppbar(
+        title: Image.asset('assets/images/logo.png', height: 30),
+      ),
       body: Padding(
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(

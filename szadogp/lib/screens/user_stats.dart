@@ -24,8 +24,6 @@ class UserStatsScreen extends ConsumerWidget {
                 appBar: const UserBannerAppbar(),
                 body: userStats.when(
                     data: (userStatsData) {
-                      print('USER STATS DATA: $userStatsData');
-
                       return Column(
                         children: [
                           //user banner with background

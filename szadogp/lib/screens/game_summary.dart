@@ -30,7 +30,7 @@ class SummaryScreen extends ConsumerWidget {
     // final bool isAdmin = summaryData['creatorId'] == userInfo['_id'];
 
     return Scaffold(
-      appBar: const LogoAppbar(),
+      appBar: LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),

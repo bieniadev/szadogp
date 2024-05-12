@@ -66,6 +66,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
 
     return Scaffold(
       appBar: LogoAppbar(
+        title: Image.asset('assets/images/logo.png', height: 30),
         customExitButton: IconButton(
             onPressed: () {
               ref.read(currentScreenProvider.notifier).state = const HomeScreen();

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
-  const LogoAppbar({super.key, this.customExitButton});
   final Widget? customExitButton;
+  final Widget? title;
+  const LogoAppbar({
+    super.key,
+    this.customExitButton,
+    this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: Image.asset('assets/images/logo.png', height: 30),
+      title: title,
       centerTitle: true,
       elevation: 5,
       leading: customExitButton,

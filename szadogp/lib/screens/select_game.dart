@@ -39,7 +39,9 @@ class SelectGameScreen extends ConsumerWidget {
     final boardgamesData = ref.watch(boardgamesDataProvider);
 
     return Scaffold(
-        appBar: const LogoAppbar(),
+        appBar: LogoAppbar(
+          title: Image.asset('assets/images/logo.png', height: 30),
+        ),
         body: boardgamesData.when(
             data: (boardgamesList) {
               return Padding(
