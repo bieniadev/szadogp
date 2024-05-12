@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,6 +27,10 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   String _lobbyId = '';
   List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
+  List<Map<String, dynamic>> _groups = [];
+  List<String> _usersIdGroups = [];
+
+  final List<int?> _groupValue = [null];
 
   void _startPolling(lobbyId) {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
@@ -35,6 +40,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
       if (_lobbyData['users'].length != _usersList.length) {
         setState(() {
           _lobbyData['users'] = _usersList;
+          _groupValue.add(null);
         });
         //popup ze dolaczyl ok? :D
       }
@@ -44,7 +50,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-
     _startPolling(_lobbyId);
   }
 
@@ -52,7 +57,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider);
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
-
     _lobbyId = _lobbyData['_id'];
 
     //check for admin
@@ -76,7 +80,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
             icon: const Icon(Icons.hotel_rounded)),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 4),
         child: Column(
           children: [
             // Text(
@@ -89,6 +93,9 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
             isAdmin
                 ? ActionButton(
                     onTap: () async {
+                      print('LOBBY DATA: $_lobbyData');
+
+                      print(_groupValue);
                       int usersAmmount = 1; //fake grupa number
                       List<Map<String, dynamic>> fakeGroups = [
                         ..._usersList.map((mapEntry) {
@@ -118,9 +125,10 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                         })
                       ];
                       try {
-                        final Map<String, dynamic> response = await ApiServices().startGame(fakeGroups, _lobbyId);
-                        ref.read(runningGameProvider.notifier).state = response;
-                        ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
+                        //uncommment 3 linie nizej
+                        // final Map<String, dynamic> response = await ApiServices().startGame(fakeGroups, _lobbyId);
+                        // ref.read(runningGameProvider.notifier).state = response;
+                        // ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
                         _timer!.cancel();
                       } catch (err) {
                         throw Exception(err);
@@ -153,7 +161,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                     hintText: 'CZY START?',
                     hasBorder: false,
                   ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
             Row(
               children: [
                 Text('PLAYERS', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
@@ -161,7 +169,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                 Text('GROUP', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
               ],
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
                   itemCount: _lobbyData['users'].length,
@@ -192,14 +200,50 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                   return const SizedBox(height: 0);
                                 },
                               ),
-                              trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
+                              //   trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
+                              trailing: DropdownButton<int>(
+                                value: _groupValue[index],
+                                items: List.generate(
+                                    5,
+                                    (index) => DropdownMenuItem<int>(
+                                          value: index + 1,
+                                          child: Text('NR: ${index + 1}'),
+                                        )),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _groupValue[index] = value!;
+                                  });
+                                  print('GROUPS VAL: $_groupValue');
+
+                                  String userGroupId = _lobbyData['users'][index]['_id'];
+                                  if (!_usersIdGroups.contains(userGroupId)) {
+                                    // zrobic if check jesli kliknie w inna grupe to zeby stworzylo sie nowe
+                                    _usersIdGroups.add(userGroupId);
+                                  }
+                                  print('USERSIDGROUPS: $_usersIdGroups');
+
+                                  // if (_groups ==_groupValue[index]){
+
+                                  // }
+
+                                  //   for (var group in _groups) {
+                                  //     print('GRUPS: $group');
+                                  //   }
+                                  //   print('GROUPS: ${_groups}');
+
+                                  //   _groups[index] = {
+                                  //     'groupIdentifier': _groupValue[index],
+                                  //     'users': [userGroupId],
+                                  //   };
+                                },
+                              ),
                             ),
                           ),
                         ),
                       )),
             ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 20),
+              padding: const EdgeInsets.only(bottom: 10, top: 5),
               child: Stack(
                 alignment: Alignment.topCenter,
                 children: [
