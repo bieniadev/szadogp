@@ -40,7 +40,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
 
           List<DropdownMenuItem<int>>? lista = List.generate(
               5, // _inGameTeams, naprawic dynamicznie renderowana ilosc miejsc lol??
-              (index) => DropdownMenuItem(
+              (index) => DropdownMenuItem<int>(
                     value: index,
                     child: Text('${index + 1}'),
                   ));
