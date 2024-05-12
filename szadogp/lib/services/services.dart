@@ -143,7 +143,6 @@ class ApiServices {
     final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/start-game');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}; //kys Content-Type
     Response response = await put(uri, headers: requestHeaders, body: encodedBody);
-
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       return result;

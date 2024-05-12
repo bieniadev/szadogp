@@ -24,10 +24,10 @@ class SummaryScreen extends ConsumerWidget {
     String formattedTimerValue = '${(duration.inHours.toString()).padLeft(2, '0')}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
     TextEditingController noteController = TextEditingController();
 
-    // print('KONIEC GRY INFO: $summaryData');
-    // print('USERINFO: $userInfo');
-
     // final bool isAdmin = summaryData['creatorId'] == userInfo['_id'];
+
+    //sample summary data (2 players)
+    //{_id: 664129c14b648461ac6586c6, boardGameId: {_id: 663d12b800edff98b2c91d8d, name: Terraformacja Marsa, imageUrl: https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856, maxPlayers: 5}, code: OD01VT, status: CLOSING_LOBBY, creatorId: 663d2d6bb91965ae304f4394, users: [{_id: 663d2d6bb91965ae304f4394, username: sigma1337}, {_id: 663a7572cf6ea2b33f6e8804, username: Benia}], groups: [{groupIdentifier: 1, users: [{_id: 663d2d6bb91965ae304f4394, username: sigma1337}]}, {groupIdentifier: 2, users: [{_id: 663a7572cf6ea2b33f6e8804, username: Benia}]}], ranking: [], createdAt: 2024-05-12T20:42:41.933Z, updatedAt: 2024-05-12T20:45:48.578Z, __v: 0, startedAt: 2024-05-12T20:43:08.448Z, finishedAt: 2024-05-12T20:45:48.578Z}
 
     return Scaffold(
       appBar: LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
@@ -46,9 +46,7 @@ class SummaryScreen extends ConsumerWidget {
               ),
               SummarySection(
                 text: 'Ranking',
-                widget: SelectRanking(
-                  players: summaryData['groups'],
-                ),
+                widget: SelectRanking(players: summaryData['groups']),
               ),
               const SizedBox(height: 20),
               SummarySection(
@@ -77,7 +75,7 @@ class SummaryScreen extends ConsumerWidget {
 
                     //zakonczenie gry i wyslanie podsumowania do bazy
                     try {
-                      final result = await ApiServices().closeGame(usersRanks, summaryData['_id']);
+                      await ApiServices().closeGame(usersRanks, summaryData['_id']);
                     } catch (err) {
                       throw Exception(err);
                     }

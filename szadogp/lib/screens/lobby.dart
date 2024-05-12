@@ -27,11 +27,14 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   String _lobbyId = '';
   List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
-  List<Map<String, dynamic>> _groups = [];
+  List<Map<String, dynamic>> _groups = [{}];
   List<String> _usersIdGroups = [];
+  List<dynamic> usersInLobby = [];
+  List<Map<String, dynamic>> _fixedGroups = [];
 
   final List<int?> _groupValue = [null];
 
+  //func checking for players to join
   void _startPolling(lobbyId) {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
       lobbyId = _lobbyId;
@@ -41,8 +44,9 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
         setState(() {
           _lobbyData['users'] = _usersList;
           _groupValue.add(null);
+          _groups.add({});
         });
-        //popup ze dolaczyl ok? :D
+        //to do: popup ze dolaczyl ok? :D
       }
     });
   }
@@ -75,7 +79,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
             onPressed: () {
               ref.read(currentScreenProvider.notifier).state = const HomeScreen();
 
-              //funckja do usuwania gry z bazy danych /to do
+              // to do: funckja do usuwania gry z bazy danych
             },
             icon: const Icon(Icons.hotel_rounded)),
       ),
@@ -83,52 +87,15 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
         padding: const EdgeInsets.only(left: 20, right: 20, bottom: 4),
         child: Column(
           children: [
-            // Text(
-            //   _lobbyData['boardGameId']['name'],
-            //   style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.bold),
-            // ),
-            // const SizedBox(height: 20),
             ImageRounded(imageUrl: _lobbyData['boardGameId']['imageUrl']),
             const SizedBox(height: 10),
             isAdmin
                 ? ActionButton(
                     onTap: () async {
-                      print('LOBBY DATA: $_lobbyData');
-
-                      print(_groupValue);
-                      int usersAmmount = 1; //fake grupa number
-                      List<Map<String, dynamic>> fakeGroups = [
-                        ..._usersList.map((mapEntry) {
-                          final String iD = mapEntry['_id']; //id gracza
-                          final int groupNr = usersAmmount; // nr grupy
-                          usersAmmount++; //fake grupa increment
-
-                          final Map<String, dynamic> userInfoMap = {
-                            'users': [iD], //poprawic dla kilku id o tej samej grupie
-                            'groupIdentifier': groupNr
-                          };
-                          return userInfoMap;
-                          //   print('USERMAP: $userInfoMap');
-
-                          // return {
-                          //   "groups": [
-                          //     {
-                          //       "groupIdentifier": 1,
-                          //       "users": ["6626ba0b4ad316d11a29d388","6626ba0b4ad316d11a29d388"]
-                          //     },
-                          //     {
-                          //       "groupIdentifier": 2,
-                          //       "users": ["6626bb62c19a39054ed1dc5d"]
-                          //     }
-                          //   ]
-                          // }
-                        })
-                      ];
                       try {
-                        //uncommment 3 linie nizej
-                        // final Map<String, dynamic> response = await ApiServices().startGame(fakeGroups, _lobbyId);
-                        // ref.read(runningGameProvider.notifier).state = response;
-                        // ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
+                        final Map<String, dynamic> response = await ApiServices().startGame(_fixedGroups, _lobbyId);
+                        ref.read(runningGameProvider.notifier).state = response;
+                        ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
                         _timer!.cancel();
                       } catch (err) {
                         throw Exception(err);
@@ -200,11 +167,10 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                   return const SizedBox(height: 0);
                                 },
                               ),
-                              //   trailing: const Icon(Icons.one_x_mobiledata_outlined, color: Colors.white, size: 50),
                               trailing: DropdownButton<int>(
                                 value: _groupValue[index],
                                 items: List.generate(
-                                    5,
+                                    5, // to do: przy dynamicznym renderowanu itemow wywala err  zmienna-> _lobbyData['users'].length
                                     (index) => DropdownMenuItem<int>(
                                           value: index + 1,
                                           child: Text('NR: ${index + 1}'),
@@ -213,28 +179,50 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                   setState(() {
                                     _groupValue[index] = value!;
                                   });
-                                  print('GROUPS VAL: $_groupValue');
-
                                   String userGroupId = _lobbyData['users'][index]['_id'];
-                                  if (!_usersIdGroups.contains(userGroupId)) {
-                                    // zrobic if check jesli kliknie w inna grupe to zeby stworzylo sie nowe
-                                    _usersIdGroups.add(userGroupId);
+                                  Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
+                                  usersInLobby.add(infoUser);
+                                  Map<String, dynamic> userToRemove = {};
+                                  for (var user in usersInLobby) {
+                                    if (user['id'] == infoUser['id']) {
+                                      userToRemove = user;
+                                      break;
+                                    }
                                   }
-                                  print('USERSIDGROUPS: $_usersIdGroups');
+                                  if (usersInLobby.length > _lobbyData['users'].length) {
+                                    usersInLobby.remove(userToRemove);
+                                  }
 
-                                  // if (_groups ==_groupValue[index]){
+                                  _usersIdGroups = [];
+                                  for (var user in usersInLobby) {
+                                    if (infoUser['nrGroup'] == user['nrGroup']) {
+                                      _usersIdGroups.add(user['_id']);
+                                    }
+                                  }
+                                  _groups[index] = {
+                                    'groupIdentifier': _groupValue[index],
+                                    'users': _usersIdGroups,
+                                  };
 
-                                  // }
+                                  List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
+                                    Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
 
-                                  //   for (var group in _groups) {
-                                  //     print('GRUPS: $group');
-                                  //   }
-                                  //   print('GROUPS: ${_groups}');
+                                    for (var group in groups) {
+                                      int groupIdentifier = group['groupIdentifier'] ?? 0; // to do: przy wybieraniu peirwszy raz grupy group['groupIdentifier'] zwraca null (2 razy przy 2 graczach), zrobic odpowieni handling np kazac wybrac grupy do konca
 
-                                  //   _groups[index] = {
-                                  //     'groupIdentifier': _groupValue[index],
-                                  //     'users': [userGroupId],
-                                  //   };
+                                      if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
+                                        uniqueGroupsMap[groupIdentifier] = group;
+                                      }
+                                    }
+
+                                    // Sortowanie mapy według klucza 'groupIdentifier'
+                                    List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
+                                    uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
+
+                                    return uniqueGroups;
+                                  }
+
+                                  _fixedGroups = removeDuplicateGroups(_groups);
                                 },
                               ),
                             ),

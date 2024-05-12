@@ -12,9 +12,7 @@ class UserRecentlyGames extends StatelessWidget {
       padding: const EdgeInsets.all(0),
       itemCount: userStatsData.length,
       itemBuilder: (context, index) {
-        // int playersPerGame = userStatsData[index]['groups'].length;
-        List<dynamic> playersTeam = userStatsData[index]['groups'];
-        // print('GRUPY USEROW: $playersTeam}');
+        List<dynamic> winnersTeam = userStatsData[index]['winnersGroup'];
         return InkWell(
           onTap: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => GameDetailsScreen(gameStatsData: userStatsData[index]),
@@ -73,27 +71,16 @@ class UserRecentlyGames extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: SizedBox(
-                    height: 23 * playersTeam.length.toDouble(),
+                    height: 23 * winnersTeam.length.toDouble(),
                     width: 20,
                     child: ListView.builder(
-                      // w tej liscie ma byc tylko pokazana zwycieska grupa
                       padding: const EdgeInsets.all(0),
                       physics: const NeverScrollableScrollPhysics(),
-
-                      itemCount: playersTeam.length,
-                      itemBuilder: (context, index) {
-                        List<dynamic> playersInTeam = playersTeam[index]['users'];
-                        //   print('PLAYERSTEAM USERS LIST: ${playersTeam[index]['users']}'); //TU DAC TYLKO OSOBY Z WYGRYWAJACEJ GRUPY
-                        for (var player in playersInTeam) {
-                          return Text(player['username'].toString());
-                        }
-                        return const Text('<Empty>');
-                      },
+                      itemCount: winnersTeam.length,
+                      itemBuilder: (context, index) => Text(winnersTeam[index]),
                     ),
                   ),
                 ),
-
-                //   Text('Kto gral: ${userStatsData[index]['groups']['gropusIdentifier'][0]}'), // to do better result who played with
               ],
             ),
           ),
