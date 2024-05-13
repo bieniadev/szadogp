@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:szadogp/models/test.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:szadogp/models/models_summary_screen.dart';
 import 'package:szadogp/providers/ranking.dart';
 
 class SelectRanking extends ConsumerStatefulWidget {
@@ -53,7 +52,10 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: usersInfo.length,
                   itemBuilder: (context, index) {
-                    return Text(usersInfo[index].username);
+                    return Text(
+                      usersInfo[index].username,
+                      style: GoogleFonts.rubik(fontSize: 14),
+                    );
                   },
                 ),
               ),
@@ -61,7 +63,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
               DropdownButton<int>(
                   value: _groupValue[index],
                   items: List.generate(
-                      5, // to do: przy dynamicznym renderowanu itemow wywala err  zmienna-> _lobbyData['users'].length
+                      _players.length,
                       (index) => DropdownMenuItem<int>(
                             value: index + 1,
                             child: Text('NR: ${index + 1}'),
@@ -86,6 +88,9 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
                     if (_rankings.length > _players.length) {
                       _rankings.removeAt(rankIndex);
                     }
+
+                    _rankings.sort((a, b) =>
+                        a.groupIdentifier.compareTo(b.groupIdentifier));
 
                     ref.read(rankingProvider.notifier).state = _rankings;
                   }),

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
-import 'package:szadogp/models/test.dart';
+import 'package:szadogp/models/models_summary_screen.dart';
 
 class ApiServices {
   //api link

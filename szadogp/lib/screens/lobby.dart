@@ -45,8 +45,13 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           _lobbyData['users'] = _usersList;
           _groupValue.add(null);
           _groups.add({});
+          // to do: test czy działa
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: const Duration(seconds: 3),
+            content: Text('${_lobbyData['users'].last} dołączył do lobby'),
+            backgroundColor: Colors.blue[300],
+          ));
         });
-        //to do: popup ze dolaczyl ok? :D
       }
     });
   }
@@ -209,7 +214,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                   ? DropdownButton<int>(
                                       value: _groupValue[index],
                                       items: List.generate(
-                                          5, // to do: przy dynamicznym renderowanu itemow wywala err  zmienna-> _lobbyData['users'].length
+                                          _lobbyData['users'].length,
                                           (index) => DropdownMenuItem<int>(
                                                 value: index + 1,
                                                 child: Text('NR: ${index + 1}'),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,12 +8,11 @@ import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/select_rank.dart';
 import 'package:szadogp/components/summary_section.dart';
-import 'package:szadogp/models/test.dart';
+import 'package:szadogp/models/models_summary_screen.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/ranking.dart';
 import 'package:szadogp/providers/summary_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
-// import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -20,11 +21,22 @@ class SummaryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Map<String, dynamic> userInfo = ref.read(userInfoProvider);
     // final Map<String, dynamic> summaryData = ref.read(summaryGameProvider); //uncomment
     // Duration duration = ref.read(timerValueProvider); //uncomment
     // String formattedTimerValue ='${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}'; //uncomment
     TextEditingController noteController = TextEditingController();
+
+    bool isUnique(List<int> list) {
+      var set = <int>{};
+      for (var num in list) {
+        if (set.contains(num)) {
+          return false; // Jeśli numer już istnieje, to lista nie ma unikalnych wartości
+        } else {
+          set.add(num); // Dodaj numer do zbioru
+        }
+      }
+      return true; // Jeśli żaden numer nie powtórzył się, lista ma unikalne wartości
+    }
 
     // delete after
     String formattedTimerValue = '3:23:12';
@@ -95,33 +107,65 @@ class SummaryScreen extends ConsumerWidget {
                 text: 'Notatka',
                 widget: TextField(
                   controller: noteController,
+                  minLines: 3,
+                  maxLines: 5,
+                  style: GoogleFonts.rubik(fontSize: 15),
+                  textCapitalization: TextCapitalization.sentences,
                   decoration:
                       const InputDecoration(border: OutlineInputBorder()),
                 ),
               ),
               const SizedBox(height: 20),
               ActionButton(
-                  onTap: () async {
-                    SummaryRankingToSend dataToSend = SummaryRankingToSend(
-                      ranking: ref.read(rankingProvider),
-                      note: noteController.text,
-                    );
-                    print('DATA TO SEND:');
-                    print('RANKING: ${dataToSend.ranking}');
-                    print('NOTE: ${dataToSend.note}');
-                    //zakonczenie gry i wyslanie podsumowania do bazy
-                    //to do: sprawdzenie czy wszyscy maja uzupelniony ranking (petla po zmiennej data to send>if ranking ==0>nieprzepuszczac)
-                    //uncomment
-                    try {
-                      await ApiServices().closeGame(dataToSend, sampleData.id);
-                    } catch (err) {
-                      throw Exception(err);
-                    }
+                onTap: () async {
+                  List<Ranking> rankingList = ref.read(rankingProvider);
+                  SummaryRankingToSend dataToCheck = SummaryRankingToSend(
+                    ranking: rankingList,
+                    note: noteController.text,
+                  );
+
+                  //check if all players selected team
+                  if (rankingList.length < sampleData.groups.length) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      duration: Duration(seconds: 3),
+                      content: Text('Wybierz wszystkim ranking!'),
+                      backgroundColor: Colors.red,
+                    ));
+                    return;
+                  }
+
+                  List<int> rankNumbers =
+                      rankingList.map((e) => e.place).toList();
+
+                  //check if same rankings occurs
+                  if (!isUnique(rankNumbers)) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      duration: Duration(seconds: 3),
+                      content:
+                          Text('Ten sam ranking występuje w kilku drużynach!'),
+                      backgroundColor: Colors.red,
+                    ));
+                  }
+
+                  if (noteController.text.isEmpty ||
+                      noteController.text == '') {
+                    noteController.text = 'Brak notatki...';
+                    dataToCheck.note = noteController.text;
+                  }
+
+                  final SummaryRankingToSend dataToSend = dataToCheck;
+                  log('NOTATKA: ${dataToSend.note}');
+                  try {
+                    await ApiServices().closeGame(dataToCheck, sampleData.id);
                     ref.read(currentScreenProvider.notifier).state =
                         const HomeScreen();
-                  },
-                  hintText: 'ZAPISZ',
-                  hasBorder: false)
+                  } catch (err) {
+                    throw Exception(err);
+                  }
+                },
+                hintText: 'ZAPISZ',
+                hasBorder: false,
+              )
             ],
           ),
         ),
