@@ -14,6 +14,7 @@ class UserStatsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider);
     final userStats = ref.watch(userStatsProvider);
+    //to do: zmienic nasluchiwanie i ustawic request z api = lepsze rozwiazanie naprawi to dynamiczne sprawdzenie zakonczonej gry w statach
 
     return Scaffold(
       body: userData.when(

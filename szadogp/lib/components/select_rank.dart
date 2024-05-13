@@ -30,9 +30,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48 * _players.length.toDouble() +
-          (_players.length.toDouble() * 10) -
-          10,
+      height: 48 * _players.length.toDouble() + (_players.length.toDouble() * 10) - 10,
       child: ListView.separated(
         padding: const EdgeInsets.all(0),
         physics: const NeverScrollableScrollPhysics(),
@@ -73,14 +71,11 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
                       _groupValue[index] = value!;
                     });
 
-                    Ranking selectedRank = Ranking(
-                        groupIdentifier: index + 1, place: _groupValue[index]!);
+                    Ranking selectedRank = Ranking(groupIdentifier: index + 1, place: _groupValue[index]!);
                     _rankings.add(selectedRank);
                     int rankIndex = 0;
                     for (var rank in _rankings) {
-                      if (selectedRank.groupIdentifier ==
-                              rank.groupIdentifier &&
-                          _rankings.length > _players.length) {
+                      if (selectedRank.groupIdentifier == rank.groupIdentifier && _rankings.length > _players.length) {
                         break;
                       }
                       rankIndex++;
@@ -89,8 +84,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
                       _rankings.removeAt(rankIndex);
                     }
 
-                    _rankings.sort((a, b) =>
-                        a.groupIdentifier.compareTo(b.groupIdentifier));
+                    _rankings.sort((a, b) => a.groupIdentifier.compareTo(b.groupIdentifier));
 
                     ref.read(rankingProvider.notifier).state = _rankings;
                   }),

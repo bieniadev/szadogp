@@ -46,37 +46,55 @@ class SummaryRankingToSend {
   });
 }
 
-class GameSummary {
+class SummaryData {
   String id;
   Map<String, dynamic> boardGameId;
-  String code;
-  String status;
+
   String creatorId;
   List<UserInfo> users;
   List<TeamGroups> groups;
-  List<dynamic> ranking;
-  String createdAt;
-  String updatedAt;
-  int vValue;
-  String startedAt;
-  String finishedAt;
 
-  GameSummary({
+  SummaryData({
     required this.id,
     required this.boardGameId,
-    required this.code,
-    required this.status,
     required this.creatorId,
     required this.users,
     required this.groups,
-    required this.ranking,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.vValue,
-    required this.startedAt,
-    required this.finishedAt,
   });
 }
+// class GameSummary {
+//   String id;
+//   Map<String, dynamic> boardGameId;
+//   String code;
+//   String status;
+//   String creatorId;
+//   List<UserInfo> users;
+//   List<TeamGroups> groups;
+//   List<dynamic> ranking;
+//   String createdAt;
+//   String updatedAt;
+//   int vValue;
+//   String startedAt;
+//   String finishedAt;
+
+//   GameSummary({
+//     required this.id,
+//     required this.boardGameId,
+//     required this.code,
+//     required this.status,
+//     required this.creatorId,
+//     required this.users,
+//     required this.groups,
+//     required this.ranking,
+//     required this.createdAt,
+//     required this.updatedAt,
+//     required this.vValue,
+//     required this.startedAt,
+//     required this.finishedAt,
+//   });
+// }
+
+
 
     // {
     //_id: 664129c14b648461ac6586c6, 

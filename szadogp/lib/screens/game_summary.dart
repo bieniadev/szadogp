@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,66 +19,70 @@ class SummaryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final Map<String, dynamic> summaryData = ref.read(summaryGameProvider); //uncomment
-    // Duration duration = ref.read(timerValueProvider); //uncomment
-    // String formattedTimerValue ='${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}'; //uncomment
+    final Map<String, dynamic> summaryData = ref.read(summaryGameProvider);
     TextEditingController noteController = TextEditingController();
+    //to do: poprosic o czas gry obliczony z bazy danych
+    Duration duration = ref.read(timerValueProvider); //uncomment
+    String formattedTimerValue = '${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}'; //uncomment
 
     bool isUnique(List<int> list) {
       var set = <int>{};
       for (var num in list) {
         if (set.contains(num)) {
-          return false; // Jeśli numer już istnieje, to lista nie ma unikalnych wartości
+          return false;
         } else {
-          set.add(num); // Dodaj numer do zbioru
+          set.add(num);
         }
       }
-      return true; // Jeśli żaden numer nie powtórzył się, lista ma unikalne wartości
+      return true;
     }
 
     // delete after
-    String formattedTimerValue = '3:23:12';
-    GameSummary sampleData = GameSummary(
-      id: '664129c14b648461ac6586c6',
-      boardGameId: {
-        '_id': '663d12b800edff98b2c91d8d',
-        'name': 'Terraformacja Marsa',
-        'imageUrl':
-            'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856',
-        'maxPlayers': 5
-      },
-      code: 'OD01VT',
-      status: 'CLOSING_LOBBY',
+    // log('SUMMARY DATA: $summaryData');
+    // print(summaryData['groups'].map((e) => e['users'].toString()));
+
+    SummaryData sampleData = SummaryData(
+      id: summaryData['_id'],
+      boardGameId: {'_id': summaryData['boardGameId']['_id'], 'name': summaryData['boardGameId']['name'], 'imageUrl': summaryData['boardGameId']['imageUrl'], 'maxPlayers': summaryData['boardGameId']['maxPlayers']},
       creatorId: '663d2d6bb91965ae304f4394',
-      users: [
-        UserInfo(id: '663a7572cf6ea2b33f6e8804', username: 'Benia'),
-        UserInfo(id: '663d2d6bb91965ae304f4394', username: 'sigma1337')
-      ],
+      users: (summaryData['users'] as List<dynamic>).map((userInfo) => UserInfo(id: userInfo['_id'], username: userInfo['username'])).toList(),
       groups: [
-        TeamGroups(groupIdentifier: 1, users: [
-          UserInfo(id: '663d2d6bb91965ae304f4394', username: 'sigma1337'),
-          UserInfo(id: '663d2d6bb91965ae304f4394', username: 'sigma1337')
-        ]),
-        TeamGroups(groupIdentifier: 2, users: [
-          UserInfo(id: '663a7572cf6ea2b33f6e8804', username: 'Benia'),
-          UserInfo(id: '54879357923574jfis9r34ji', username: 'TestowyZiom'),
-        ]),
-        TeamGroups(groupIdentifier: 3, users: [
-          UserInfo(id: '663a7572cf6ea2b33f6e8804', username: 'Benia'),
-          UserInfo(id: '54879357923574jfis9r34ji', username: 'TestowyZiom'),
-        ]),
+        for (var groupData in summaryData['groups'])
+          TeamGroups(
+            groupIdentifier: groupData['groupIdentifier'],
+            users: [
+              for (var userData in groupData['users'])
+                UserInfo(
+                  id: userData['_id'],
+                  username: userData['username'],
+                ),
+            ],
+          ),
       ],
-      ranking: [],
-      createdAt: '2024-05-12T20:42:41.933Z',
-      updatedAt: '2024-05-12T20:45:48.578Z',
-      vValue: 0,
-      startedAt: '2024-05-12T20:43:08.448Z',
-      finishedAt: '2024-05-12T20:45:48.578Z',
+      // groups: (summaryData['groups'] as List<dynamic>).map((groups) {
+      //   List<UserInfo> userInfoList = [];
+      //   int idx = groups['groupIdentifier'] - 1;
+      //   print('INDEX: $idx');
+      //   for (var e in groups['users']) {
+      //     log('XD: $e');
+      //   }
+      //   //   var test = UserInfo(id: groups['users'][groups['groupIdentifier'] - 1]['_id'], username: groups['users'][groups['groupIdentifier'] - 1]['username']);
+
+      //   //   log('${groups['users']}');
+      //   return TeamGroups(groupIdentifier: groups['groupIdentifier'], users: userInfoList);
+      // }).toList()
     );
 
+    // log('${sampleData.groups}');
+    // for (var e in sampleData.groups) {
+    //   print('${e.groupIdentifier} : ');
+    //   for (var x in e.users) {
+    //     print(x.username);
+    //   }
+    // }
+
     return Scaffold(
-      appBar:
-          LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
+      appBar: LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -89,12 +91,8 @@ class SummaryScreen extends ConsumerWidget {
               ImageRounded(imageUrl: sampleData.boardGameId['imageUrl']),
               Column(
                 children: [
-                  Text('CZAS',
-                      style: GoogleFonts.rubikMonoOne(
-                          fontSize: 36, fontWeight: FontWeight.bold)),
-                  Text(formattedTimerValue,
-                      style: GoogleFonts.rubikMonoOne(
-                          fontSize: 36, fontWeight: FontWeight.bold)),
+                  Text('CZAS', style: GoogleFonts.rubikMonoOne(fontSize: 36, fontWeight: FontWeight.bold)),
+                  Text(formattedTimerValue, style: GoogleFonts.rubikMonoOne(fontSize: 36, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -111,8 +109,7 @@ class SummaryScreen extends ConsumerWidget {
                   maxLines: 5,
                   style: GoogleFonts.rubik(fontSize: 15),
                   textCapitalization: TextCapitalization.sentences,
-                  decoration:
-                      const InputDecoration(border: OutlineInputBorder()),
+                  decoration: const InputDecoration(border: OutlineInputBorder()),
                 ),
               ),
               const SizedBox(height: 20),
@@ -134,34 +131,36 @@ class SummaryScreen extends ConsumerWidget {
                     return;
                   }
 
-                  List<int> rankNumbers =
-                      rankingList.map((e) => e.place).toList();
+                  List<int> rankNumbers = rankingList.map((e) => e.place).toList();
 
                   //check if same rankings occurs
                   if (!isUnique(rankNumbers)) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       duration: Duration(seconds: 3),
-                      content:
-                          Text('Ten sam ranking występuje w kilku drużynach!'),
+                      content: Text('Ten sam ranking występuje w kilku drużynach!'),
                       backgroundColor: Colors.red,
                     ));
                   }
 
-                  if (noteController.text.isEmpty ||
-                      noteController.text == '') {
+                  if (noteController.text.isEmpty || noteController.text == '') {
                     noteController.text = 'Brak notatki...';
                     dataToCheck.note = noteController.text;
                   }
 
                   final SummaryRankingToSend dataToSend = dataToCheck;
-                  log('NOTATKA: ${dataToSend.note}');
+                  final List<Ranking> rankingToFix = dataToSend.ranking;
+                  final List<dynamic> rankingToSend = [];
+                  for (var rank in rankingToFix) {
+                    Map<String, int> decodedRank = {'groupIdentifier': rank.groupIdentifier, 'place': rank.place};
+                    rankingToSend.add(decodedRank);
+                  }
+
                   try {
-                    await ApiServices().closeGame(dataToCheck, sampleData.id);
-                    ref.read(currentScreenProvider.notifier).state =
-                        const HomeScreen();
+                    await ApiServices().closeGame(rankingToSend, dataToSend.note, sampleData.id);
                   } catch (err) {
                     throw Exception(err);
                   }
+                  ref.read(currentScreenProvider.notifier).state = const HomeScreen();
                 },
                 hintText: 'ZAPISZ',
                 hasBorder: false,
