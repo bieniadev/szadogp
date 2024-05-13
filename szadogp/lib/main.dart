@@ -13,7 +13,8 @@ void main() async {
   // ignore: unused_local_variable
   var db = await Hive.openBox('user-token');
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) => runApp(const ProviderScope(child: App())));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) => runApp(const ProviderScope(child: App())));
 }
 
 class App extends ConsumerWidget {

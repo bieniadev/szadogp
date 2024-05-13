@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:szadogp/models/test.dart';
 
 class ApiServices {
   //api link
@@ -25,7 +26,8 @@ class ApiServices {
   }
 
   //register
-  Future<bool> registerCredentials(String email, String pass, String username) async {
+  Future<bool> registerCredentials(
+      String email, String pass, String username) async {
     Map<String, dynamic> request = {
       'email': email,
       'password': pass,
@@ -44,7 +46,9 @@ class ApiServices {
   Future<Map<String, dynamic>> getUserInfo() async {
     final token = await Hive.box('user-token').get(1);
     final uri = Uri.parse('$baseUrl/api/auth/me');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       final Map<String, dynamic> result = jsonDecode(response.body);
@@ -58,7 +62,9 @@ class ApiServices {
   Future<List<dynamic>> getGamesInfo() async {
     final token = await Hive.box('user-token').get(1);
     final uri = Uri.parse('$baseUrl/api/board-games');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       final List<dynamic> result = jsonDecode(response.body);
@@ -75,7 +81,9 @@ class ApiServices {
       'boardGameId': boardgameId,
     };
     final uri = Uri.parse('$baseUrl/api/game-manager/create-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await post(uri, headers: requestHeaders, body: request);
     if (response.statusCode == 201) {
       final Map<String, dynamic> result = jsonDecode(response.body);
@@ -92,7 +100,9 @@ class ApiServices {
       'code': code,
     };
     final uri = Uri.parse('$baseUrl/api/game-manager/join-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await put(uri, headers: requestHeaders, body: request);
 
     if (response.statusCode == 200) {
@@ -108,7 +118,9 @@ class ApiServices {
     final token = await Hive.box('user-token').get(1);
     Map<String, dynamic> request = {'userId': userId};
     final uri = Uri.parse('$baseUrl/api/game-manager/???');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await post(uri, headers: requestHeaders, body: request);
 
     if (response.statusCode == 200) {
@@ -123,7 +135,9 @@ class ApiServices {
   Future<List<dynamic>> checkForUsersInLobby(String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
     final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/players');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -135,14 +149,20 @@ class ApiServices {
   }
 
   //start game
-  Future<Map<String, dynamic>> startGame(List<Map<String, dynamic>> groups, String runningGameId) async {
+  Future<Map<String, dynamic>> startGame(
+      List<Map<String, dynamic>> groups, String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
     final Map<String, dynamic> request = {'groups': groups};
     String encodedBody = json.encode(request);
 
-    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/start-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}; //kys Content-Type
-    Response response = await put(uri, headers: requestHeaders, body: encodedBody);
+    final uri =
+        Uri.parse('$baseUrl/api/game-manager/$runningGameId/start-game');
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
+    }; //kys Content-Type
+    Response response =
+        await put(uri, headers: requestHeaders, body: encodedBody);
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       return result;
@@ -155,8 +175,11 @@ class ApiServices {
   Future<Map<String, dynamic>> finishGame(String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
 
-    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/finish-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final uri =
+        Uri.parse('$baseUrl/api/game-manager/$runningGameId/finish-game');
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await put(uri, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -168,14 +191,19 @@ class ApiServices {
   }
 
   //close game in database
-  Future<Map<String, dynamic>> closeGame(List<Map<String, dynamic>> ranks, String runningGameId) async {
-    // to do zrobić customowy input na notatke
+  Future<Map<String, dynamic>> closeGame(
+      SummaryRankingToSend dataToSend, String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
-    final Map<String, dynamic> request = {'ranking': ranks, 'note': "HUJ RUDY TO ZJEB MATKA GO NIE KOCHA A STARY TO PEDAŁ A JAKBY MIAL SIOSTRE  TO JEGO SIOSTRA BYLA  BY DZIWKA"};
+    final SummaryRankingToSend request = dataToSend;
     String encodedBody = json.encode(request);
-    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/close-game');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}; //kys Content-Type
-    Response response = await put(uri, headers: requestHeaders, body: encodedBody);
+    final uri =
+        Uri.parse('$baseUrl/api/game-manager/$runningGameId/close-game');
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
+    }; //kys Content-Type
+    Response response =
+        await put(uri, headers: requestHeaders, body: encodedBody);
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
@@ -189,8 +217,11 @@ class ApiServices {
   Future<Map<String, dynamic>> checkIfGameStarted(String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
 
-    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/check-game-started');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final uri = Uri.parse(
+        '$baseUrl/api/game-manager/$runningGameId/check-game-started');
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -205,8 +236,11 @@ class ApiServices {
   Future<Map<String, dynamic>> checkIfGameEnded(String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
 
-    final uri = Uri.parse('$baseUrl/api/game-manager/$runningGameId/check-game-ended');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final uri =
+        Uri.parse('$baseUrl/api/game-manager/$runningGameId/check-game-ended');
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
 
     if (response.statusCode == 200) {
@@ -222,7 +256,9 @@ class ApiServices {
     final token = await Hive.box('user-token').get(1);
 
     final uri = Uri.parse('$baseUrl/api/games/history');
-    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
+    final Map<String, String> requestHeaders = {
+      'Authorization': 'Bearer $token'
+    };
     Response response = await get(uri, headers: requestHeaders);
     // print(response);
     if (response.statusCode == 200) {

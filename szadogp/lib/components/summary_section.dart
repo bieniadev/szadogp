@@ -13,12 +13,16 @@ class SummarySection extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(text, style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
+        Text(text,
+            style: GoogleFonts.rubikMonoOne(
+                fontSize: 20, fontWeight: FontWeight.w800)),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: Container(
             width: double.infinity,
-            decoration: BoxDecoration(color: const Color.fromARGB(255, 81, 81, 81).withOpacity(0.3), borderRadius: BorderRadius.circular(40)),
+            decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 81, 81, 81).withOpacity(0.3),
+                borderRadius: BorderRadius.circular(40)),
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: widget,

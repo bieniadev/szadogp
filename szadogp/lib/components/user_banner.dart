@@ -24,7 +24,7 @@ class UserBanner extends StatelessWidget {
               },
               blendMode: BlendMode.dstIn,
               child: Image.network(
-                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDNbidSXapy9W0xfbOBvI_SLjnFkP2ln9Spe43IG4Biw&s',
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDNbidSXapy9W0xfbOBvI_SLjnFkP2ln9Spe43IG4Biw&s', // to do: custom image background
                 width: double.infinity,
                 fit: BoxFit.cover,
               ),
@@ -37,9 +37,13 @@ class UserBanner extends StatelessWidget {
                   Container(
                     height: 80,
                     width: 80,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25), border: Border.all(width: 2, color: Colors.black), color: Colors.white),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(width: 2, color: Colors.black),
+                      color: Colors.white,
+                    ),
 
-                    // child: Image.network(''), zmienna/link do zdj
+                    // child: Image.network(''), // to do: zmienna/link do zdj
                     // backgroundImage: ,
                   ),
                   Padding(
@@ -50,7 +54,16 @@ class UserBanner extends StatelessWidget {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 1,
-                        shadows: <Shadow>[const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black), const Shadow(offset: Offset(1.5, -1.5), color: Colors.black), const Shadow(offset: Offset(1.5, 1.5), color: Colors.black), const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black)],
+                        shadows: <Shadow>[
+                          const Shadow(
+                              offset: Offset(-1.5, -1.5), color: Colors.black),
+                          const Shadow(
+                              offset: Offset(1.5, -1.5), color: Colors.black),
+                          const Shadow(
+                              offset: Offset(1.5, 1.5), color: Colors.black),
+                          const Shadow(
+                              offset: Offset(-1.5, 1.5), color: Colors.black)
+                        ],
                       ),
                     ),
                   ),
