@@ -16,6 +16,7 @@ class CodeInput extends ConsumerWidget {
         onChanged: onChanged,
         textCapitalization: TextCapitalization.characters,
         decoration: InputDecoration(
+          counter: const SizedBox(height: 0),
           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100), gapPadding: 5, borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 4)),
           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100), gapPadding: 5, borderSide: const BorderSide(color: Colors.black, width: 4)),
           fillColor: Theme.of(context).primaryColor.withOpacity(0.4),
@@ -41,8 +42,9 @@ class CodeInput extends ConsumerWidget {
         ),
         autocorrect: false,
         textAlign: TextAlign.center,
-        style: GoogleFonts.rubik(color: Colors.white, fontSize: 30, letterSpacing: 20, fontWeight: FontWeight.w600),
+        style: GoogleFonts.rubik(color: Colors.white, fontSize: 28, letterSpacing: 20, fontWeight: FontWeight.w600),
         maxLength: 6,
+        scrollPhysics: const NeverScrollableScrollPhysics(),
         showCursor: false,
       ),
     );

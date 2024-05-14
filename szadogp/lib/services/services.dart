@@ -225,7 +225,7 @@ class ApiServices {
     final uri = Uri.parse('$baseUrl/api/games/history');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);
-    // print(response);
+
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
       return result;

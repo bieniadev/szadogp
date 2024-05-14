@@ -13,10 +13,8 @@ class UserStatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider);
-    final userStats = ref.watch(userStatsProvider); // uncomment
-    final userTestStats = ref.read(testUserStatsProvider); //to do: test czy pobiera sie gra po skonczeniu odrazu
+    final userTestStats = ref.read(testUserStatsProvider);
     //to do: zmienic nasluchiwanie i ustawic request z api = lepsze rozwiazanie naprawi to dynamiczne sprawdzenie zakonczonej gry w statach
-    print('USER $userTestStats');
 
     return Scaffold(
       body: userData.when(
@@ -24,23 +22,16 @@ class UserStatsScreen extends ConsumerWidget {
             return Scaffold(
                 extendBodyBehindAppBar: true,
                 appBar: const UserBannerAppbar(),
-                body: userStats.when(
-                    data: (userStatsData) {
-                      return Column(
-                        children: [
-                          //user banner with background
-                          UserBanner(username: userInfo['username']),
-                          // overal stats user/podsumowanie
-                          const UserStats(),
-                          // lista z recent played grami
-                          Expanded(child: UserRecentlyGames(userStatsData: userStatsData)),
-                        ],
-                      );
-                    },
-                    loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (err, s) {
-                      return Text('$err');
-                    }));
+                body: Column(
+                  children: [
+                    //user banner with background
+                    UserBanner(username: userInfo['username']),
+                    // overal stats user/podsumowanie
+                    const UserStats(),
+                    // lista z recent played grami
+                    Expanded(child: UserRecentlyGames(userStatsData: userTestStats)),
+                  ],
+                ));
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (err, s) {

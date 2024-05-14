@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/home.dart';
@@ -27,8 +26,6 @@ class LoginScreen extends ConsumerWidget {
 
     //sign in user method
     signUserIn(WidgetRef ref) async {
-      isLoading = true;
-      // log('CZY LADUJE: $isLoading');
       //read inputs from controlers
       final password = passwordController.text;
       final email = emailController.text;
@@ -49,13 +46,12 @@ class LoginScreen extends ConsumerWidget {
 
         //unfocus keyboard
         FocusManager.instance.primaryFocus?.unfocus();
-        isLoading = false;
-        // log('CZY LADUJE: $isLoading');
+
+        ref.read(isLoadingProvider.notifier).state = false;
         //set current screen to home;
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
       } catch (err) {
-        isLoading = false;
-        // log('CZY LADUJE: $isLoading');
+        ref.read(isLoadingProvider.notifier).state = false;
         // ignore: use_build_context_synchronously
         return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
@@ -107,6 +103,7 @@ class LoginScreen extends ConsumerWidget {
                             'Login',
                             style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2),
                           )
+                        // ignore: dead_code
                         : const CircularProgressIndicator(color: Colors.white)),
                 const SizedBox(height: 40),
 

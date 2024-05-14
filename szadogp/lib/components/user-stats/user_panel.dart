@@ -16,9 +16,8 @@ class UserPanel extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () async {
-        final response = await ApiServices().getUserStats();
-        ref.read(testUserStatsProvider.notifier).state = response as Map<String, dynamic>;
-
+        final List<dynamic> response = await ApiServices().getUserStats();
+        ref.read(testUserStatsProvider.notifier).state = response;
         // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => const UserStatsScreen(),

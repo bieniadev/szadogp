@@ -5,4 +5,4 @@ final userStatsProvider = FutureProvider<dynamic>((ref) {
   return ref.watch(apiServicesProvider).getUserStats();
 });
 
-final testUserStatsProvider = StateProvider((_) => {});
+final testUserStatsProvider = StateProvider<List<dynamic>>((_) => []);
