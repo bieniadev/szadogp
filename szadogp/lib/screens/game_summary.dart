@@ -37,10 +37,6 @@ class SummaryScreen extends ConsumerWidget {
       return true;
     }
 
-    // delete after
-    // log('SUMMARY DATA: $summaryData');
-    // print(summaryData['groups'].map((e) => e['users'].toString()));
-
     SummaryData sampleData = SummaryData(
       id: summaryData['_id'],
       boardGameId: {'_id': summaryData['boardGameId']['_id'], 'name': summaryData['boardGameId']['name'], 'imageUrl': summaryData['boardGameId']['imageUrl'], 'maxPlayers': summaryData['boardGameId']['maxPlayers']},
@@ -59,27 +55,7 @@ class SummaryScreen extends ConsumerWidget {
             ],
           ),
       ],
-      // groups: (summaryData['groups'] as List<dynamic>).map((groups) {
-      //   List<UserInfo> userInfoList = [];
-      //   int idx = groups['groupIdentifier'] - 1;
-      //   print('INDEX: $idx');
-      //   for (var e in groups['users']) {
-      //     log('XD: $e');
-      //   }
-      //   //   var test = UserInfo(id: groups['users'][groups['groupIdentifier'] - 1]['_id'], username: groups['users'][groups['groupIdentifier'] - 1]['username']);
-
-      //   //   log('${groups['users']}');
-      //   return TeamGroups(groupIdentifier: groups['groupIdentifier'], users: userInfoList);
-      // }).toList()
     );
-
-    // log('${sampleData.groups}');
-    // for (var e in sampleData.groups) {
-    //   print('${e.groupIdentifier} : ');
-    //   for (var x in e.users) {
-    //     print(x.username);
-    //   }
-    // }
 
     return Scaffold(
       appBar: LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
