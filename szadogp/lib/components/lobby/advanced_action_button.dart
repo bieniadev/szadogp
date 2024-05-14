@@ -30,7 +30,6 @@ class AdvancedActionButton extends ConsumerWidget {
             onTap: () async {
               try {
                 // if solo in lobby check
-                print(lobbyData['users'].length);
                 if (lobbyData['users'].length < 2) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     duration: Duration(seconds: 2),
