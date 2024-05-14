@@ -1,17 +1,17 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:szadogp/components/action_button.dart';
+import 'package:szadogp/components/advanced_action_button.dart';
+import 'package:szadogp/components/code_displayer.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
-import 'package:szadogp/providers/running_game.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/home.dart';
-import 'package:szadogp/screens/running_game.dart';
 import 'package:szadogp/services/services.dart';
 import 'package:szadogp/components/popup.dart';
 
@@ -27,12 +27,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   String _lobbyId = '';
   List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
-  final List<Map<String, dynamic>> _groups = [{}];
+  final List<Map<String, dynamic>> _groups = [{}, {}, {}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
   List<String> _usersIdGroups = [];
   final List<dynamic> _usersInLobby = [];
   List<Map<String, dynamic>> _fixedGroups = [];
 
-  final List<int?> _groupValue = [null];
+  final List<int?> _groupValue = [null, null, null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
 
   //func checking for players to join
   void _startPolling(lobbyId) {
@@ -59,15 +59,43 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-    _startPolling(_lobbyId);
+    // _startPolling(_lobbyId); //uncomment
   }
 
   @override
   Widget build(BuildContext context) {
-    _lobbyData = ref.watch(lobbyDataProvider);
-    Map<String, dynamic> userInfo = ref.read(userInfoProvider);
-    _lobbyId = _lobbyData['_id'];
+    // _lobbyData = ref.watch(lobbyDataProvider); //uncomment
+    // Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncomment
+    // _lobbyId = _lobbyData['_id']; //unncoment
 
+    Map<String, dynamic> userInfo = {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'};
+    _lobbyData = {
+      '_id': '664129c14b648461ac6586c6',
+      'boardGameId': {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856', 'maxPlayers': 5},
+      'code': 'OD01VT',
+      'creatorId': '663d2d6bb91965ae304f4394',
+      'users': [
+        {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'},
+        {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
+        {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
+      ],
+      'groups': [
+        {
+          'groupIdentifier': 1,
+          'users': [
+            {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
+          ]
+        },
+        {
+          'groupIdentifier': 2,
+          'users': [
+            {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
+            {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
+          ]
+        }
+      ],
+    };
+    _lobbyId = _lobbyData['_id'];
     //check for admin
     final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
 
@@ -94,45 +122,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           children: [
             ImageRounded(imageUrl: _lobbyData['boardGameId']['imageUrl']),
             const SizedBox(height: 10),
-            isAdmin
-                ? ActionButton(
-                    onTap: () async {
-                      try {
-                        final Map<String, dynamic> response = await ApiServices().startGame(_fixedGroups, _lobbyId);
-                        ref.read(runningGameProvider.notifier).state = response;
-                        ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
-                        _timer!.cancel();
-                      } catch (err) {
-                        throw Exception(err);
-                      }
-                    },
-                    hintText: 'START',
-                    hasBorder: false,
-                  )
-                : ActionButton(
-                    onTap: () async {
-                      try {
-                        //bambikowy kod dla wpusczania nie admina do gry
-                        final Map<String, dynamic> response = await ApiServices().checkIfGameStarted(_lobbyData['_id']);
-
-                        if (response['redirect']!) {
-                          ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
-                        }
-                        if (!response['redirect']!) {
-                          // ignore: use_build_context_synchronously
-                          return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            duration: Duration(seconds: 5),
-                            content: Text('Gra sie jescze nie zaczeła'),
-                            backgroundColor: Colors.red,
-                          ));
-                        }
-                      } catch (err) {
-                        throw Exception(err);
-                      }
-                    },
-                    hintText: 'CZY START?',
-                    hasBorder: false,
-                  ),
+            AdvancedActionButton(
+              isAdmin: isAdmin,
+              timer: _timer,
+              lobbyData: _lobbyData,
+              fixedGroups: _fixedGroups,
+            ),
             const SizedBox(height: 15),
             Row(
               children: [
@@ -239,50 +234,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                         ),
                       )),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, top: 5),
-              child: Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(35),
-                      color: const Color.fromARGB(255, 49, 49, 49),
-                    ),
-                    child: Text(
-                      _lobbyData['code'],
-                      style: GoogleFonts.rubik(
-                        letterSpacing: 20,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w700,
-                        shadows: <Shadow>[
-                          const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black),
-                          const Shadow(offset: Offset(1.5, -1.5), color: Colors.black),
-                          const Shadow(offset: Offset(1.5, 1.5), color: Colors.black),
-                          const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'CODE',
-                    style: GoogleFonts.rubikMonoOne(
-                      fontSize: 28,
-                      letterSpacing: 1,
-                      fontWeight: FontWeight.w700,
-                      shadows: <Shadow>[
-                        const Shadow(offset: Offset(-1.5, -1.5), color: Colors.black),
-                        const Shadow(offset: Offset(1.5, -1.5), color: Colors.black),
-                        const Shadow(offset: Offset(1.5, 1.5), color: Colors.black),
-                        const Shadow(offset: Offset(-1.5, 1.5), color: Colors.black),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            CodeDisplayer(lobbyData: _lobbyData),
           ],
         ),
       ),
