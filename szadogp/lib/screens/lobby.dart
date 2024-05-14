@@ -27,12 +27,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   String _lobbyId = '';
   List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
-  final List<Map<String, dynamic>> _groups = [{}, {}, {}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
+  final List<Map<String, dynamic>> _groups = [{}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
   List<String> _usersIdGroups = [];
   final List<dynamic> _usersInLobby = [];
   List<Map<String, dynamic>> _fixedGroups = [];
 
-  final List<int?> _groupValue = [null, null, null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
+  final List<int?> _groupValue = [null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
 
   //func checking for players to join
   void _startPolling(lobbyId) {
@@ -45,7 +45,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           _lobbyData['users'] = _usersList;
           _groupValue.add(null);
           _groups.add({});
-          // to do: test czy działa
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: const Duration(seconds: 2),
             content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
@@ -59,42 +58,42 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-    // _startPolling(_lobbyId); //uncomment
+    _startPolling(_lobbyId); //uncomment
   }
 
   @override
   Widget build(BuildContext context) {
-    // _lobbyData = ref.watch(lobbyDataProvider); //uncomment
-    // Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncomment
-    // _lobbyId = _lobbyData['_id']; //unncoment
+    _lobbyData = ref.watch(lobbyDataProvider); //uncomment
+    Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncomment
+    _lobbyId = _lobbyData['_id']; //unncoment
 
-    Map<String, dynamic> userInfo = {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'};
-    _lobbyData = {
-      '_id': '664129c14b648461ac6586c6',
-      'boardGameId': {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856', 'maxPlayers': 5},
-      'code': 'OD01VT',
-      'creatorId': '663d2d6bb91965ae304f4394',
-      'users': [
-        {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'},
-        {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-        {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
-      ],
-      'groups': [
-        {
-          'groupIdentifier': 1,
-          'users': [
-            {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
-          ]
-        },
-        {
-          'groupIdentifier': 2,
-          'users': [
-            {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-            {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
-          ]
-        }
-      ],
-    };
+    // Map<String, dynamic> userInfo = {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'};
+    // _lobbyData = {
+    //   '_id': '664129c14b648461ac6586c6',
+    //   'boardGameId': {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856', 'maxPlayers': 5},
+    //   'code': 'OD01VT',
+    //   'creatorId': '663d2d6bb91965ae304f4394',
+    //   'users': [
+    //     {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'},
+    //     {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
+    //     {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
+    //   ],
+    //   'groups': [
+    //     {
+    //       'groupIdentifier': 1,
+    //       'users': [
+    //         {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
+    //       ]
+    //     },
+    //     {
+    //       'groupIdentifier': 2,
+    //       'users': [
+    //         {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
+    //         {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
+    //       ]
+    //     }
+    //   ],
+    // };
     _lobbyId = _lobbyData['_id'];
     //check for admin
     final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
@@ -111,7 +110,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
         customExitButton: IconButton(
             onPressed: () {
               ref.read(currentScreenProvider.notifier).state = const HomeScreen();
-
               // to do: funckja do usuwania gry z bazy danych
             },
             icon: const Icon(Icons.hotel_rounded)),
@@ -219,9 +217,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                           }
 
                                           List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
-
                                           uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
-
                                           return uniqueGroups;
                                         }
 
