@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:szadogp/components/user_banner.dart';
-import 'package:szadogp/components/user_banner_appbar.dart';
-import 'package:szadogp/components/user_recentlygames.dart';
-import 'package:szadogp/components/user_stats.dart';
+import 'package:szadogp/components/user-stats/user_banner.dart';
+import 'package:szadogp/components/user-stats/user_banner_appbar.dart';
+import 'package:szadogp/components/user-stats/user_recentlygames.dart';
+import 'package:szadogp/components/user-stats/user_stats.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/providers/user_stats.dart';
 
