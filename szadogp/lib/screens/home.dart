@@ -53,9 +53,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       hintText: 'STWÓRZ GRĘ',
                       hasBorder: true,
                       onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SelectGameScreen(),
-                        ));
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SelectGameScreen()));
                       })
                   : ActionButton(
                       hintText: 'DOŁĄCZ DO GRY',
