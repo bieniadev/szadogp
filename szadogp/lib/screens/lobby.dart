@@ -43,6 +43,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           _lobbyData['users'] = _usersList;
           _groupValue.add(null);
           _groups.add({});
+          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: const Duration(seconds: 2),
             content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
@@ -56,42 +57,13 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-    _startPolling(_lobbyId); //uncomment
+    _startPolling(_lobbyId);
   }
 
   @override
   Widget build(BuildContext context) {
-    _lobbyData = ref.watch(lobbyDataProvider); //uncomment
-    Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncomment
-    _lobbyId = _lobbyData['_id']; //unncoment
-
-    // Map<String, dynamic> userInfo = {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'};
-    // _lobbyData = {
-    //   '_id': '664129c14b648461ac6586c6',
-    //   'boardGameId': {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856', 'maxPlayers': 5},
-    //   'code': 'OD01VT',
-    //   'creatorId': '663d2d6bb91965ae304f4394',
-    //   'users': [
-    //     {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'},
-    //     {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-    //     {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
-    //   ],
-    //   'groups': [
-    //     {
-    //       'groupIdentifier': 1,
-    //       'users': [
-    //         {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
-    //       ]
-    //     },
-    //     {
-    //       'groupIdentifier': 2,
-    //       'users': [
-    //         {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-    //         {'_id': '663a7asasdadsad33f6e8812', 'username': 'Spell'}
-    //       ]
-    //     }
-    //   ],
-    // };
+    _lobbyData = ref.watch(lobbyDataProvider);
+    Map<String, dynamic> userInfo = ref.read(userInfoProvider);
     _lobbyId = _lobbyData['_id'];
     //check for admin
     final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
@@ -113,7 +85,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
             icon: const Icon(Icons.hotel_rounded)),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, bottom: 4),
+        padding: const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 4),
         child: Column(
           children: [
             ImageRounded(imageUrl: _lobbyData['boardGameId']['imageUrl']),

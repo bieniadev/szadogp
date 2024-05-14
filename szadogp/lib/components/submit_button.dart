@@ -17,7 +17,7 @@ class SubmitButton extends ConsumerStatefulWidget {
 }
 
 class _SubmitButtonState extends ConsumerState<SubmitButton> {
-  bool _isLoading = false; // to do: animacja loadingu po kliknieciu
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {

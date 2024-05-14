@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/summary_game.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/services/services.dart';
@@ -51,7 +52,7 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
       children: [
         Text('CZAS', style: GoogleFonts.rubikMonoOne(fontSize: 36, fontWeight: FontWeight.bold)),
         Text(_timerValue, style: GoogleFonts.rubikMonoOne(fontSize: 36, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 30),
+        const SizedBox(height: 10),
         widget.isAdmin
             ? ActionButton(
                 onTap: () async {
@@ -61,7 +62,9 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
 
                     widget.finishGame(_duration);
                     _timer!.cancel();
+                    ref.read(isLoadingProvider.notifier).state = false;
                   } catch (err) {
+                    ref.read(isLoadingProvider.notifier).state = false;
                     throw Exception(err);
                   }
                 },
@@ -77,15 +80,18 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
                       ref.read(currentScreenProvider.notifier).state = const HomeScreen();
                     }
                     if (!response['redirect']!) {
+                      ref.read(isLoadingProvider.notifier).state = false;
                       // ignore: use_build_context_synchronously
                       return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        duration: Duration(seconds: 5),
+                        duration: Duration(seconds: 3),
                         content: Text('Gra sie jescze nie skończyła'),
                         backgroundColor: Colors.red,
                       ));
                     }
                     _timer!.cancel();
+                    ref.read(isLoadingProvider.notifier).state = false;
                   } catch (err) {
+                    ref.read(isLoadingProvider.notifier).state = false;
                     throw Exception(err);
                   }
                 },

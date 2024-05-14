@@ -5,6 +5,7 @@ import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/lobby/input_code.dart';
 import 'package:szadogp/components/user-stats/user_panel.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/lobby.dart';
@@ -53,6 +54,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       hintText: 'STWÓRZ GRĘ',
                       hasBorder: true,
                       onTap: () {
+                        ref.read(isLoadingProvider.notifier).state = false;
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SelectGameScreen()));
                       })
                   : ActionButton(
@@ -64,7 +66,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                         //usunac w produkcji ok?
                         if (_codeController.text.toLowerCase() == 'delete') {
-                          //wylogowanie? przykladowy kod
+                          // to do: wylogowanie? przykladowy kod
                           _dbRef.delete(1);
                           ref.read(userTokenProvider.notifier).state = '';
                           ref.read(currentScreenProvider.notifier).state = const LoginScreen();
@@ -74,11 +76,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         try {
                           final lobbyData = await ApiServices().joinGame(_codeController.text.toUpperCase());
                           ref.read(lobbyDataProvider.notifier).state = lobbyData;
+                          ref.read(isLoadingProvider.notifier).state = false;
                           ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
                         } catch (err) {
+                          ref.read(isLoadingProvider.notifier).state = false;
                           // ignore: use_build_context_synchronously
                           return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            duration: const Duration(seconds: 5),
+                            duration: const Duration(seconds: 3),
                             content: Text('$err'),
                             backgroundColor: Colors.red,
                           ));

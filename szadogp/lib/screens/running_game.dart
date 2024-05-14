@@ -17,49 +17,10 @@ class RunningGameScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<String, dynamic> lobbyData = ref.read(runningGameProvider); // uncomment
+    Map<String, dynamic> lobbyData = ref.read(runningGameProvider);
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
 
-    //delete after
-    //sample lobby data (2 players):
-    //{_id: 664129c14b648461ac6586c6, boardGameId: {_id: 663d12b800edff98b2c91d8d, name: Terraformacja Marsa, imageUrl: https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856, maxPlayers: 5}, code: OD01VT, status: CREATING_LOBBY, creatorId: 663d2d6bb91965ae304f4394, users: [{_id: 663d2d6bb91965ae304f4394, username: sigma1337}, {_id: 663a7572cf6ea2b33f6e8804, username: Benia}], groups: [], ranking: [], createdAt: 2024-05-12T20:42:41.933Z, updatedAt: 2024-05-12T20:42:41.933Z, __v: 0}
-
-    // List<Map<String, dynamic>> groups = [
-    //   {
-    //     'groupIdentifier': 1,
-    //     'users': [
-    //       {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
-    //     ]
-    //   },
-    //   {
-    //     'groupIdentifier': 2,
-    //     'users': [
-    //       {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-    //       {'_id': '663a75312412412s33f6e880', 'username': 'Testowy'}
-    //     ]
-    //   },
-    //   {
-    //     'groupIdentifier': 3,
-    //     'users': [
-    //       {'_id': '213572cf6ea2b33f6e81231a', 'username': 'Godsyk'},
-    //     ]
-    //   }
-    // ];
-
-    // Map<String, dynamic> lobbyData = {
-    //   'creatorId': '663d2d6bb91965ae304f4394',
-    //   'boardGameId': {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856'},
-    //   '_id': 'sadad',
-    //   'groups': groups,
-    //   'users': [
-    //     {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'},
-    //     {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
-    //     {'_id': '663a75312412412s33f6e880', 'username': 'Testowy'},
-    //     {'_id': '213572cf6ea2b33f6e81231a', 'username': 'Godsyk'}
-    //   ],
-    // };
-
-    final bool isAdmin = lobbyData['creatorId'] == userInfo['_id']; //uncomment
+    final bool isAdmin = lobbyData['creatorId'] == userInfo['_id'];
 
     Duration timerValue = const Duration();
     finishGame(val) {
@@ -97,19 +58,19 @@ class RunningGameScreen extends ConsumerWidget {
         title: Image.asset('assets/images/logo.png', height: 30),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
         child: Column(
           children: [
             ImageRounded(imageUrl: lobbyData['boardGameId']['imageUrl']),
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
+            //timer
             StopwatchTimer(
               isAdmin: isAdmin,
               finishGame: finishGame,
               totalTime: timerValue,
               gameId: lobbyData['_id'],
-            ), //timer
-
-            const SizedBox(height: 30),
+            ),
+            const SizedBox(height: 15),
             Row(
               children: [
                 Text('PLAYERS', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
@@ -117,8 +78,7 @@ class RunningGameScreen extends ConsumerWidget {
                 Text('GROUP', style: GoogleFonts.rubikMonoOne(fontSize: 20, fontWeight: FontWeight.w800)),
               ],
             ),
-            const SizedBox(height: 10),
-
+            const SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
                   itemCount: lobbyData['users'].length,

@@ -8,6 +8,7 @@ import 'package:szadogp/components/summary/select_rank.dart';
 import 'package:szadogp/components/summary/summary_section.dart';
 import 'package:szadogp/models/models_summary_screen.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/ranking.dart';
 import 'package:szadogp/providers/summary_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
@@ -104,6 +105,7 @@ class SummaryScreen extends ConsumerWidget {
                       content: Text('Wybierz wszystkim ranking!'),
                       backgroundColor: Colors.red,
                     ));
+                    ref.read(isLoadingProvider.notifier).state = false;
                     return;
                   }
 
@@ -116,6 +118,8 @@ class SummaryScreen extends ConsumerWidget {
                       content: Text('Ten sam ranking występuje w kilku drużynach!'),
                       backgroundColor: Colors.red,
                     ));
+                    ref.read(isLoadingProvider.notifier).state = false;
+                    return;
                   }
 
                   if (noteController.text.isEmpty || noteController.text == '') {
@@ -130,10 +134,11 @@ class SummaryScreen extends ConsumerWidget {
                     Map<String, int> decodedRank = {'groupIdentifier': rank.groupIdentifier, 'place': rank.place};
                     rankingToSend.add(decodedRank);
                   }
-
+                  ref.read(isLoadingProvider.notifier).state = false;
                   try {
                     await ApiServices().closeGame(rankingToSend, dataToSend.note, sampleData.id);
                   } catch (err) {
+                    ref.read(isLoadingProvider.notifier).state = false;
                     throw Exception(err);
                   }
                   ref.read(currentScreenProvider.notifier).state = const HomeScreen();

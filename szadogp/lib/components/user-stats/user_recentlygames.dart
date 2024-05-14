@@ -23,47 +23,47 @@ class UserRecentlyGames extends StatelessWidget {
               children: [
                 userStatsData[index]['isWinner'] // check for place
                     ? Container(
-                        height: 100,
+                        height: 80,
                         width: 55,
                         color: Colors.blue[400],
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('W', style: TextStyle(fontSize: 24)),
+                            const Text('W', style: TextStyle(fontSize: 20)),
                             const Divider(
                               color: Colors.white,
                               thickness: 2,
-                              endIndent: 20,
-                              indent: 20,
+                              endIndent: 18,
+                              indent: 18,
                             ),
-                            Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 14)),
+                            Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 12)),
                           ],
                         ),
                       )
                     : Container(
-                        height: 100,
+                        height: 80,
                         width: 55,
                         color: Colors.red[400],
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text('L', style: TextStyle(fontSize: 30)),
+                            const Text('L', style: TextStyle(fontSize: 20)),
                             const Divider(
                               color: Colors.white,
                               thickness: 2,
-                              endIndent: 20,
-                              indent: 20,
+                              endIndent: 18,
+                              indent: 18,
                             ),
-                            Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 16)),
+                            Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 11)),
                           ],
                         ),
                       ),
                 const SizedBox(width: 10),
                 Container(
                   clipBehavior: Clip.hardEdge,
-                  width: 170,
-                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
-                  child: Image.network(userStatsData[index]['boardGameId']['imageUrl'], fit: BoxFit.cover, height: 90),
+                  width: 150,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  child: Image.network(userStatsData[index]['boardGameId']['imageUrl'], fit: BoxFit.cover, height: 70),
                 ),
                 const SizedBox(width: 8),
                 const Text('WIN GR:'), // wstawic tu img pucharka
