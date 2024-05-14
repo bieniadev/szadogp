@@ -13,8 +13,10 @@ class UserStatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider);
-    final userStats = ref.watch(userStatsProvider);
+    final userStats = ref.watch(userStatsProvider); // uncomment
+    final userTestStats = ref.read(testUserStatsProvider); //to do: test czy pobiera sie gra po skonczeniu odrazu
     //to do: zmienic nasluchiwanie i ustawic request z api = lepsze rozwiazanie naprawi to dynamiczne sprawdzenie zakonczonej gry w statach
+    print('USER $userTestStats');
 
     return Scaffold(
       body: userData.when(

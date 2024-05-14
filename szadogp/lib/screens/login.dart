@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/components/input_textfield.dart';
 import 'package:szadogp/components/submit_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/register.dart';
@@ -39,6 +40,10 @@ class LoginScreen extends ConsumerWidget {
           ref.read(userTokenProvider.notifier).state = response;
           dbRef.put(1, response);
         }
+
+        // to do: test 2 dolne linie czy dynamicznie zmieniaja user name
+        final Map<String, dynamic> userInfoResponse = await ApiServices().getUserInfo();
+        ref.read(userInfoProvider.notifier).state = userInfoResponse;
         //set current screen to home;
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
       } catch (err) {

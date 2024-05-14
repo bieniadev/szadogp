@@ -4,3 +4,5 @@ import 'package:szadogp/services/services.dart';
 final userStatsProvider = FutureProvider<dynamic>((ref) {
   return ref.watch(apiServicesProvider).getUserStats();
 });
+
+final testUserStatsProvider = StateProvider((_) => {});
