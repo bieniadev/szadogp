@@ -68,6 +68,8 @@ class LoginScreen extends ConsumerWidget {
                   controller: emailController,
                   hintText: 'Email',
                   obscureText: false,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 15),
 
@@ -76,6 +78,8 @@ class LoginScreen extends ConsumerWidget {
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 20),
 

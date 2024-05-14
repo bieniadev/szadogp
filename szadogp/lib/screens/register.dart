@@ -35,8 +35,8 @@ class RegisterScreen extends ConsumerWidget {
         if (response) {
           // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            duration: Duration(seconds: 5),
-            content: Text('Succesfully created account!,'),
+            duration: Duration(seconds: 3),
+            content: Text('Udało się założyć konto!,'),
             backgroundColor: Colors.green,
           ));
 
@@ -47,7 +47,7 @@ class RegisterScreen extends ConsumerWidget {
         // ignore: use_build_context_synchronously
         return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
-          content: Text('$err'),
+          content: Text('$err, Spróbuj użyć hasła: Password1!as'),
           backgroundColor: Colors.red,
         ));
       }
@@ -70,6 +70,8 @@ class RegisterScreen extends ConsumerWidget {
                   controller: usernameController,
                   hintText: 'Username',
                   obscureText: false,
+                  keyboardType: TextInputType.name,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 15),
 
@@ -78,6 +80,8 @@ class RegisterScreen extends ConsumerWidget {
                   controller: emailController,
                   hintText: 'Email',
                   obscureText: false,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 15),
 
@@ -86,6 +90,8 @@ class RegisterScreen extends ConsumerWidget {
                   controller: passwordController,
                   hintText: 'Password',
                   obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
                 ),
                 const SizedBox(height: 20),
 
