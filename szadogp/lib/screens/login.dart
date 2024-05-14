@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -21,12 +23,12 @@ class LoginScreen extends ConsumerWidget {
     // controlers for texfield inputs
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    bool isLoading = false;
 
     //sign in user method
     signUserIn(WidgetRef ref) async {
-      //unfocus keyboard
-      FocusManager.instance.primaryFocus?.unfocus();
-
+      isLoading = true;
+      // log('CZY LADUJE: $isLoading');
       //read inputs from controlers
       final password = passwordController.text;
       final email = emailController.text;
@@ -44,9 +46,16 @@ class LoginScreen extends ConsumerWidget {
         // to do: test 2 dolne linie czy dynamicznie zmieniaja user name
         final Map<String, dynamic> userInfoResponse = await ApiServices().getUserInfo();
         ref.read(userInfoProvider.notifier).state = userInfoResponse;
+
+        //unfocus keyboard
+        FocusManager.instance.primaryFocus?.unfocus();
+        isLoading = false;
+        // log('CZY LADUJE: $isLoading');
         //set current screen to home;
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
       } catch (err) {
+        isLoading = false;
+        // log('CZY LADUJE: $isLoading');
         // ignore: use_build_context_synchronously
         return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           duration: const Duration(seconds: 5),
@@ -90,9 +99,15 @@ class LoginScreen extends ConsumerWidget {
 
                 //sign in button
                 SubmitButton(
-                  onTap: () => signUserIn(ref),
-                  hintText: 'Login',
-                ),
+                    onTap: () {
+                      signUserIn(ref);
+                    },
+                    hintWidget: !isLoading
+                        ? const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2),
+                          )
+                        : const CircularProgressIndicator(color: Colors.white)),
                 const SizedBox(height: 40),
 
                 // create account click text

@@ -97,8 +97,13 @@ class RegisterScreen extends ConsumerWidget {
 
                 //sign in button
                 SubmitButton(
-                  onTap: () => registerUser(ref),
-                  hintText: 'Create account',
+                  onTap: () {
+                    registerUser(ref);
+                  },
+                  hintWidget: const Text(
+                    'Create account',
+                    style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 2),
+                  ),
                 ),
                 const SizedBox(height: 40),
 
