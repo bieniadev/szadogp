@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:szadogp/screens/home.dart';
+// import 'package:szadogp/screens/lobby.dart';
 import 'package:szadogp/screens/login.dart';
-import 'package:szadogp/screens/running_game.dart';
 
 final currentScreenProvider = StateProvider<Widget>((ref) {
-  // final String localToken = Hive.box('user-token').get(1) ?? '';
-  // if (localToken != '') {
-  //   return const HomeScreen();
-  // }
+  final String localToken = Hive.box('user-token').get(1) ?? '';
+  if (localToken != '') {
+    return const HomeScreen();
+  }
 
-  // return const LoginScreen();
-  return const RunningGameScreen(); //uncomment for degug
+  return const LoginScreen();
+  // return const LobbyScreen(); //uncomment for degug
 });
