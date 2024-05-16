@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +7,7 @@ import 'package:szadogp/components/lobby/advanced_action_button.dart';
 import 'package:szadogp/components/lobby/code_displayer.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
+import 'package:szadogp/models/models_summary_screen.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/user_data.dart';
@@ -54,6 +56,75 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     });
   }
 
+  void _dropDownHandler(value, index) {
+    {
+      setState(() {
+        _groupValue[index] = value!;
+      });
+      String userGroupId = _lobbyData['users'][index]['_id'];
+      Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
+      _usersInLobby.add(infoUser);
+      Map<String, dynamic> userToRemove = {};
+      for (var user in _usersInLobby) {
+        if (user['id'] == infoUser['id']) {
+          userToRemove = user;
+          break;
+        }
+      }
+      if (_usersInLobby.length > _lobbyData['users'].length) {
+        _usersInLobby.remove(userToRemove);
+      }
+
+      _usersIdGroups = [];
+      for (var user in _usersInLobby) {
+        if (infoUser['nrGroup'] == user['nrGroup']) {
+          _usersIdGroups.add(user['_id']);
+        }
+      }
+      _groups[index] = {
+        'groupIdentifier': _groupValue[index],
+        'users': _usersIdGroups,
+      };
+      if (_groups.last.isEmpty) {
+        return;
+      }
+      // scale together multi groupIdentifier into one
+      List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
+        Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
+
+        for (var group in groups) {
+          int groupIdentifier = group['groupIdentifier'] ?? 0;
+
+          if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
+            uniqueGroupsMap[groupIdentifier] = group;
+          }
+        }
+
+        List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
+        uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
+        return uniqueGroups;
+      }
+
+      //group bug lenght bug fix
+      _fixedGroups = removeDuplicateGroups(_groups);
+      List<String> fixedGroupsLenghtCheck = [];
+      for (var userId in _fixedGroups) {
+        for (var id in userId['users']) {
+          fixedGroupsLenghtCheck.add(id);
+        }
+      }
+      for (var group in _fixedGroups) {
+        if (group['groupIdentifier'] != infoUser['nrGroup']) {
+          for (var user in group['users']) {
+            if (user == infoUser['_id'] && fixedGroupsLenghtCheck.length > _lobbyData['users'].length) {
+              group['users'].remove(infoUser['_id']);
+            }
+          }
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,6 +135,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider);
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
+
     _lobbyId = _lobbyData['_id'];
     //check for admin
     final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
@@ -144,55 +216,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                                 value: index + 1,
                                                 child: Text('NR: ${index + 1}'),
                                               )),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _groupValue[index] = value!;
-                                        });
-                                        String userGroupId = _lobbyData['users'][index]['_id'];
-                                        Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
-                                        _usersInLobby.add(infoUser);
-                                        Map<String, dynamic> userToRemove = {};
-                                        for (var user in _usersInLobby) {
-                                          if (user['id'] == infoUser['id']) {
-                                            userToRemove = user;
-                                            break;
-                                          }
-                                        }
-                                        if (_usersInLobby.length > _lobbyData['users'].length) {
-                                          _usersInLobby.remove(userToRemove);
-                                        }
-
-                                        _usersIdGroups = [];
-                                        for (var user in _usersInLobby) {
-                                          if (infoUser['nrGroup'] == user['nrGroup']) {
-                                            _usersIdGroups.add(user['_id']);
-                                          }
-                                        }
-                                        _groups[index] = {
-                                          'groupIdentifier': _groupValue[index],
-                                          'users': _usersIdGroups,
-                                        };
-                                        if (_groups.last.isEmpty) {
-                                          return;
-                                        }
-                                        List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
-                                          Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
-
-                                          for (var group in groups) {
-                                            int groupIdentifier = group['groupIdentifier'] ?? 0; // to do: przy wybieraniu peirwszy raz grupy group['groupIdentifier'] zwraca null (2 razy przy 2 graczach), zrobic odpowieni handling np kazac wybrac grupy do konca
-
-                                            if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
-                                              uniqueGroupsMap[groupIdentifier] = group;
-                                            }
-                                          }
-
-                                          List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
-                                          uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
-                                          return uniqueGroups;
-                                        }
-
-                                        _fixedGroups = removeDuplicateGroups(_groups);
-                                      },
+                                      onChanged: (value) => _dropDownHandler(value, index),
                                     )
                                   : const SizedBox(height: 0), // to do: dynamiczne wyswietlanie stanu grupy dla nie adminow
                             ),
