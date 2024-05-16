@@ -64,7 +64,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
                       _players.length,
                       (index) => DropdownMenuItem<int>(
                             value: index + 1,
-                            child: Text('NR: ${index + 1}'),
+                            child: Text('${index + 1}', style: GoogleFonts.rubikMonoOne(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white70)),
                           )),
                   onChanged: (value) {
                     setState(() {
