@@ -111,7 +111,7 @@ class LoginScreen extends ConsumerWidget {
                 GestureDetector(
                   onTap: () => ref.read(currentScreenProvider.notifier).state = const RegisterScreen(),
                   child: const Text(
-                    'Don\'t have account? Sign in',
+                    'Don\'t have account? Sign up',
                     style: TextStyle(color: Colors.white70),
                   ),
                 ),
