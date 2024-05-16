@@ -109,7 +109,7 @@ class RunningGameScreen extends ConsumerWidget {
                             },
                           ),
                           trailing: Text(
-                            '${decodedGroups[index].groupIdentifier} ', //to do: zmienic na ikone grupy
+                            '${decodedGroups[index].groupIdentifier} ',
                             style: GoogleFonts.rubikMonoOne(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white70),
                           ),
                         ),

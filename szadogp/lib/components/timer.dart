@@ -27,6 +27,40 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
   Duration _duration = const Duration();
   Timer? _timer;
 
+// to do: ztestowac zegar w tle
+// Stream<int> stopWatchStream() {
+//   StreamController<int>? streamController;
+//   Timer? timer;
+//   int counter = 0;
+
+//   void stopTimer() {
+//     if (timer != null) {
+//       timer!.cancel();
+//       timer = null;
+//       counter = 0;
+//       streamController!.close();
+//     }
+//   }
+
+//   void tick(_) {
+//     counter++;
+//     streamController!.add(counter);
+//   }
+
+//   void startTimer() {
+//     timer = Timer.periodic(const Duration(milliseconds: 10), tick);
+//   }
+
+//   streamController = StreamController<int>(
+//     onListen: startTimer,
+//     onCancel: stopTimer,
+//     onResume: startTimer,
+//     onPause: stopTimer,
+//   );
+
+//   return streamController.stream;
+// }
+
   void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       setState(() {
