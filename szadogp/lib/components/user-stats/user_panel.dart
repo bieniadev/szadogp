@@ -14,26 +14,80 @@ class UserPanel extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider);
-    final userLocalData = Hive.box('user-token').get(2);
-    final userInfo = userLocalData;
-    return GestureDetector(
-      //to do: on tap wylaczyc nasluchiwanie klikania GestureDetector(refactor kodu/)
-      onTap: () async {
-        ref.read(userInfoProvider.notifier).state = userLocalData;
-        ref.read(isLoadingProvider.notifier).state = true;
-        try {
-          final List<dynamic> response = await ApiServices().getUserStats();
-          ref.read(testUserStatsProvider.notifier).state = response;
-        } catch (err) {
-          ref.read(isLoadingProvider.notifier).state = false;
-          throw Exception('$err');
-        }
 
-        ref.read(isLoadingProvider.notifier).state = false;
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserStatsScreen()));
+    return userData.when(
+      data: (data) {
+        Hive.box('user-token').put(2, data);
+        return ref.watch(isLoadingProvider)
+            ? Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 51, 51, 53),
+                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(25.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CircleAvatar(
+                        radius: 30,
+                        child: Icon(
+                          Icons.account_circle_rounded,
+                          size: 60,
+                          color: Colors.black38,
+                        ),
+                      ),
+                      CircularProgressIndicator(),
+                      SizedBox(width: 60)
+                    ],
+                  ),
+                ),
+              )
+            : GestureDetector(
+                //to do: on tap wylaczyc nasluchiwanie klikania GestureDetector(refactor kodu/)
+                onTap: () async {
+                  ref.read(userInfoProvider.notifier).state = data;
+
+                  ref.read(isLoadingProvider.notifier).state = true;
+                  try {
+                    final List<dynamic> response = await ApiServices().getUserStats();
+                    ref.read(testUserStatsProvider.notifier).state = response;
+                  } catch (err) {
+                    ref.read(isLoadingProvider.notifier).state = false;
+                    throw Exception('$err');
+                  }
+
+                  ref.read(isLoadingProvider.notifier).state = false;
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const UserStatsScreen()));
+                },
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 51, 51, 53),
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(25.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const CircleAvatar(
+                          radius: 30,
+                          child: Icon(
+                            Icons.account_circle_rounded,
+                            size: 60,
+                            color: Colors.black38,
+                          ),
+                        ),
+                        Text(data['username'], style: GoogleFonts.comicNeue(fontSize: 26, fontWeight: FontWeight.bold)),
+                        const SizedBox(width: 60)
+                      ],
+                    ),
+                  ),
+                ),
+              );
       },
-      child: Container(
+      loading: () => Container(
         decoration: const BoxDecoration(
           color: Color.fromARGB(255, 51, 51, 53),
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50.0), bottomRight: Radius.circular(50.0)),
@@ -51,25 +105,13 @@ class UserPanel extends ConsumerWidget {
                   color: Colors.black38,
                 ),
               ),
-              userData.when(
-                data: (data) {
-                  Hive.box('user-token').put(2, data);
-
-                  return ref.watch(isLoadingProvider)
-                      ? const CircularProgressIndicator()
-                      : Text(
-                          userInfo['username'],
-                          style: GoogleFonts.comicNeue(fontSize: 26, fontWeight: FontWeight.bold),
-                        );
-                },
-                loading: () => const Text('Wszytywanie...'),
-                error: (e, s) => Text('err: ${e.toString()}'),
-              ),
+              Text('Wszytywanie...', style: GoogleFonts.comicNeue(fontSize: 26, fontWeight: FontWeight.bold)),
               const SizedBox(width: 60)
             ],
           ),
         ),
       ),
+      error: (err, stackTrace) => Text('Błąd: $err'),
     );
   }
 }
