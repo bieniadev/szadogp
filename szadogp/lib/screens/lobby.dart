@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,7 +6,6 @@ import 'package:szadogp/components/lobby/advanced_action_button.dart';
 import 'package:szadogp/components/lobby/code_displayer.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
-import 'package:szadogp/models/models_summary_screen.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
 import 'package:szadogp/providers/user_data.dart';
