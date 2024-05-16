@@ -10,13 +10,13 @@ Map<String, dynamic> kDebugLobbyData = {
   'code': 'XTESTX',
   'groups': [
     {
-      'groupIdentifier': 1,
+      'groupIdentifier': 2,
       'users': [
         {'_id': '663d2d6bb91965ae304f4394', 'username': 'sigma1337'}
       ]
     },
     {
-      'groupIdentifier': 2,
+      'groupIdentifier': 1,
       'users': [
         {'_id': '663a7572cf6ea2b33f6e8804', 'username': 'Benia'},
         {'_id': '13252rsfs3wstwe4ts32353e', 'username': 'Degugger'},
