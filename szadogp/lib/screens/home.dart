@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/lobby/input_code.dart';
 import 'package:szadogp/components/user-stats/user_panel.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/lobby.dart';
-import 'package:szadogp/providers/user_token.dart';
 import 'package:szadogp/screens/lobby.dart';
-import 'package:szadogp/screens/login.dart';
 import 'package:szadogp/screens/select_game.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -23,7 +20,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final _codeController = TextEditingController();
   bool _isCodeFull = false;
-  final _dbRef = Hive.box('user-token');
 
   @override
   Widget build(BuildContext context) {
