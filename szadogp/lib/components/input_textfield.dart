@@ -45,7 +45,7 @@ class _InputTextfieldState extends State<InputTextfield> {
                       ? const Padding(
                           padding: EdgeInsets.only(right: 10),
                           child: Icon(
-                            Icons.visibility,
+                            Icons.visibility_off,
                             size: 26,
                             color: Colors.white60,
                           ),
@@ -53,7 +53,7 @@ class _InputTextfieldState extends State<InputTextfield> {
                       : const Padding(
                           padding: EdgeInsets.only(right: 10),
                           child: Icon(
-                            Icons.visibility_off,
+                            Icons.visibility,
                             size: 26,
                             color: Colors.white54,
                           ),

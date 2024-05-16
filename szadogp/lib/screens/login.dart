@@ -33,7 +33,6 @@ class LoginScreen extends ConsumerWidget {
       try {
         //call request
         final String response = await ApiServices().loginCredentials(email, password);
-
         // if db token is empty > set to localdb AND provider token from response
         if (dbToken == '') {
           ref.read(userTokenProvider.notifier).state = response;

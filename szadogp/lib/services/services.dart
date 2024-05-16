@@ -45,6 +45,7 @@ class ApiServices {
     final uri = Uri.parse('$baseUrl/api/auth/me');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);
+
     if (response.statusCode == 200) {
       final Map<String, dynamic> result = jsonDecode(response.body);
       return result;
@@ -221,7 +222,6 @@ class ApiServices {
   //get user stats recentyl player
   Future<dynamic> getUserStats() async {
     final token = await Hive.box('user-token').get(1);
-
     final uri = Uri.parse('$baseUrl/api/games/history');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);

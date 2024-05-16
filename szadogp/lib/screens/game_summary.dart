@@ -134,9 +134,9 @@ class SummaryScreen extends ConsumerWidget {
                     Map<String, int> decodedRank = {'groupIdentifier': rank.groupIdentifier, 'place': rank.place};
                     rankingToSend.add(decodedRank);
                   }
-                  ref.read(isLoadingProvider.notifier).state = false;
                   try {
                     await ApiServices().closeGame(rankingToSend, dataToSend.note, sampleData.id);
+                    ref.read(isLoadingProvider.notifier).state = false;
                   } catch (err) {
                     ref.read(isLoadingProvider.notifier).state = false;
                     throw Exception(err);
