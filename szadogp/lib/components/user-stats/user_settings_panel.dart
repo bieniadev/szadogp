@@ -1,7 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/action_button.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:szadogp/components/user-stats/drawer/drawer_tile.dart';
+import 'package:szadogp/components/user-stats/drawer/photo_display.dart';
 
 class UserSettingsPanel extends ConsumerWidget {
   const UserSettingsPanel({
@@ -15,6 +20,19 @@ class UserSettingsPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    selectImage() async {
+      final ImagePicker imagePicker = ImagePicker();
+      XFile? selectedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+      if (selectedFile != null) {
+        Uint8List selectedImage = await selectedFile.readAsBytes();
+        print('SELECTED IMAGE: $selectedImage'); // to do: zapisac zdjecie gdzies
+
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => PhotoConfirmationScreen(selectedImage: selectedImage)));
+      }
+      print('nic nie wybrano');
+    }
+
     return Drawer(
         width: 260,
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -28,7 +46,7 @@ class UserSettingsPanel extends ConsumerWidget {
                 child: Text(
                   '${userInfo['username']}',
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.rubik(fontSize: 20),
+                  style: GoogleFonts.rubikMonoOne(fontSize: 16),
                 ),
               ),
             ),
@@ -36,19 +54,27 @@ class UserSettingsPanel extends ConsumerWidget {
               child: Container(
                 width: double.infinity,
                 color: Colors.black.withOpacity(0.15),
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 50),
-                  child: SizedBox(
-                    height: 70,
-                    child: Center(
-                      child: ActionButton(
-                        onTap: logOut,
-                        hintText: 'Wyloguj',
-                        hasBorder: false,
-                      ),
+                padding: const EdgeInsets.only(bottom: 50),
+                child: Column(
+                  children: [
+                    DrawerTile(
+                      icon: Icons.account_box,
+                      text: 'Zmień zdjęcie profilowe',
+                      onTap: selectImage,
                     ),
-                  ),
+                    const Divider(height: 0, endIndent: 15, indent: 15),
+                    DrawerTile(
+                      icon: Icons.image_rounded,
+                      text: 'Zmień zdjęcie w tle',
+                      onTap: selectImage,
+                    ),
+                    const Spacer(),
+                    ActionButton(
+                      onTap: logOut,
+                      hintText: 'Wyloguj',
+                      hasBorder: false,
+                    ),
+                  ],
                 ),
               ),
             ),

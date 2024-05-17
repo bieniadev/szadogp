@@ -35,8 +35,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       }
     }
 
-    // Map<String, dynamic> userInfo = ref.read(userInfoProvider);
-
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -61,15 +59,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       onTap: () async {
                         //unfocus keyboard
                         FocusManager.instance.primaryFocus?.unfocus();
-
-                        // //usunac w produkcji ok?
-                        // if (_codeController.text.toLowerCase() == 'delete') {
-                        //   // to do: wylogowanie? przykladowy kod
-                        //   _dbRef.delete(1);
-                        //   ref.read(userTokenProvider.notifier).state = '';
-                        //   ref.read(currentScreenProvider.notifier).state = const LoginScreen();
-                        //   ref.read(isLoadingProvider.notifier).state = false;
-                        // }
 
                         // kod dolaczajacy do gry i laczy sie z api
                         try {

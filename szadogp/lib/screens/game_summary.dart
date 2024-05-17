@@ -23,8 +23,8 @@ class SummaryScreen extends ConsumerWidget {
     final Map<String, dynamic> summaryData = ref.read(summaryGameProvider);
     TextEditingController noteController = TextEditingController();
     //to do: poprosic o czas gry obliczony z bazy danych
-    Duration duration = ref.read(timerValueProvider); //uncomment
-    String formattedTimerValue = '${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}'; //uncomment
+    Duration duration = ref.read(timerValueProvider);
+    String formattedTimerValue = '${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
 
     bool isUnique(List<int> list) {
       var set = <int>{};

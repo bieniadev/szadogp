@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSPhotoLibraryUsageDescription </key>
+	<string>Przesylanie zdjec na swoj profil</string>
+		<key>NSCameraUsageDescription</key>
+	<string>Wstawianie zdjec na swoj profil</string>
+		<key>NSMicrophoneUsageDescription</key>
+	<string>Aktualnie nie uzywane</string>
 </dict>
 </plist>
