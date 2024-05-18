@@ -1,11 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'dart:typed_data';
 
-class UserBanner extends StatelessWidget {
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:szadogp/components/user-stats/dynamic_user_display.dart';
+import 'package:szadogp/providers/selected_image.dart';
+
+class UserBanner extends ConsumerWidget {
   const UserBanner({super.key, required this.username});
   final String username;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Uint8List? selectedImage = ref.watch(selectedImageProvider.notifier).state;
+
     return SizedBox(
       child: Stack(
         alignment: Alignment.bottomLeft,
@@ -30,17 +37,7 @@ class UserBanner extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Container(
-                  height: 80,
-                  width: 80,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(width: 2, color: Colors.black),
-                    color: Colors.white,
-                    // image: haveImg ? const DecorationImage(image: AssetImage('')) : const DecorationImage(image: NetworkImage('https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da846233be8bdc5bd72fc2716811'), fit: BoxFit.cover), // to do: zmienna/link do zdj
-                    image: const DecorationImage(image: AssetImage(''), fit: BoxFit.cover), // to do: zmienna/link do zdj
-                  ),
-                ),
+                DynamicImageAvatar(selectedImage: selectedImage),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:szadogp/models/k_debug_data.dart';
-import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/providers/user_stats.dart';
 import 'package:szadogp/screens/user_stats.dart';

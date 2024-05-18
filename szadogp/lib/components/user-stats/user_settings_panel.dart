@@ -7,6 +7,7 @@ import 'package:szadogp/components/action_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:szadogp/components/user-stats/drawer/drawer_tile.dart';
 import 'package:szadogp/components/user-stats/drawer/photo_display.dart';
+import 'package:szadogp/providers/is_loading.dart';
 
 class UserSettingsPanel extends ConsumerWidget {
   const UserSettingsPanel({
@@ -23,14 +24,14 @@ class UserSettingsPanel extends ConsumerWidget {
     selectImage() async {
       final ImagePicker imagePicker = ImagePicker();
       XFile? selectedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+
       if (selectedFile != null) {
         Uint8List selectedImage = await selectedFile.readAsBytes();
-        print('SELECTED IMAGE: $selectedImage'); // to do: zapisac zdjecie gdzies
-
         // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => PhotoConfirmationScreen(selectedImage: selectedImage)));
+        ref.read(isLoadingProvider.notifier).state = false;
       }
-      print('nic nie wybrano');
+      ref.read(isLoadingProvider.notifier).state = false;
     }
 
     return Drawer(
@@ -66,7 +67,7 @@ class UserSettingsPanel extends ConsumerWidget {
                     DrawerTile(
                       icon: Icons.image_rounded,
                       text: 'Zmień zdjęcie w tle',
-                      onTap: selectImage,
+                      onTap: () {},
                     ),
                     const Spacer(),
                     ActionButton(
