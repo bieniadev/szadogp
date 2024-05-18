@@ -36,10 +36,11 @@ class _PhotoConfirmationScreenState extends ConsumerState<PhotoConfirmationScree
   _uploadImage(WidgetRef ref) {
     //to do: wysylasz img do bazy i towrzy provider albo aktualizuje z userinfo o isntiejacym nowym image
 
+    Navigator.pop(context);
+    Navigator.pop(context);
+
     ref.read(selectedImageProvider.notifier).state = _selectedImage;
 
-    Navigator.pop(context);
-    Navigator.pop(context);
     ref.read(isLoadingProvider.notifier).state = false;
   }
 

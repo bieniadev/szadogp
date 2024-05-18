@@ -1,18 +1,13 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/user-stats/dynamic_user_display.dart';
-import 'package:szadogp/providers/selected_image.dart';
 
 class UserBanner extends ConsumerWidget {
   const UserBanner({super.key, required this.username});
   final String username;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Uint8List? selectedImage = ref.watch(selectedImageProvider.notifier).state;
-
     return SizedBox(
       child: Stack(
         alignment: Alignment.bottomLeft,
@@ -37,7 +32,7 @@ class UserBanner extends ConsumerWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                DynamicImageAvatar(selectedImage: selectedImage),
+                const DynamicImageAvatar(),
                 Padding(
                   padding: const EdgeInsets.all(10),
                   child: Text(
