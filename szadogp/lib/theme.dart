@@ -11,6 +11,7 @@ ThemeData themeDark = ThemeData(
     // primary: const Color.fromARGB(255, 79, 166, 237),
     seedColor: const Color.fromARGB(255, 59, 46, 161),
     background: const Color.fromARGB(255, 60, 52, 77),
+    secondary: const Color.fromARGB(255, 131, 62, 177),
   ),
 
   textTheme: const TextTheme(

@@ -17,7 +17,7 @@ class CodeInput extends ConsumerWidget {
         textCapitalization: TextCapitalization.characters,
         decoration: InputDecoration(
           counter: const SizedBox(height: 0),
-          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100), gapPadding: 5, borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 4)),
+          focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100), gapPadding: 5, borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 4)),
           enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(100), gapPadding: 5, borderSide: const BorderSide(color: Colors.black, width: 4)),
           fillColor: Theme.of(context).primaryColor.withOpacity(0.4),
           filled: true,
