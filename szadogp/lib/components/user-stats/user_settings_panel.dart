@@ -28,6 +28,8 @@ class UserSettingsPanel extends ConsumerWidget {
       if (selectedFile != null) {
         Uint8List selectedImage = await selectedFile.readAsBytes();
         // ignore: use_build_context_synchronously
+        Navigator.of(context).pop();
+        // ignore: use_build_context_synchronously
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => PhotoConfirmationScreen(selectedImage: selectedImage)));
         ref.read(isLoadingProvider.notifier).state = false;
       }
