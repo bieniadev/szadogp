@@ -3,7 +3,7 @@
     package="com.example.szadogp">
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="szadogp"
+        android:label="S.Z.A DO GP"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
