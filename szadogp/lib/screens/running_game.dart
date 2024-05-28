@@ -108,9 +108,11 @@ class RunningGameScreen extends ConsumerWidget {
                               return const SizedBox(height: 0);
                             },
                           ),
-                          trailing: Text(
-                            '${decodedGroups[index].groupIdentifier} ',
-                            style: GoogleFonts.rubikMonoOne(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white70),
+                          trailing: Container(
+                            clipBehavior: Clip.antiAlias,
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/grupa_${decodedGroups[index].groupIdentifier}.png'))),
                           ),
                         ),
                       ),

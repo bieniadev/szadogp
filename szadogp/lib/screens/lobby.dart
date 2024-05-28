@@ -126,13 +126,14 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
+
     _startPolling(_lobbyId);
   }
 
   @override
   Widget build(BuildContext context) {
-    _lobbyData = ref.watch(lobbyDataProvider);
-    Map<String, dynamic> userInfo = ref.read(userInfoProvider);
+    _lobbyData = ref.watch(lobbyDataProvider); //uncoment
+    Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncoment
 
     _lobbyId = _lobbyData['_id'];
     //check for admin
@@ -206,15 +207,33 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                 },
                               ),
                               trailing: isAdmin
-                                  ? DropdownButton<int>(
-                                      value: _groupValue[index],
-                                      items: List.generate(
-                                          _lobbyData['users'].length,
-                                          (index) => DropdownMenuItem<int>(
-                                                value: index + 1,
-                                                child: Text('${index + 1}', style: GoogleFonts.rubikMonoOne(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white70)),
-                                              )),
-                                      onChanged: (value) => _dropDownHandler(value, index),
+                                  ? Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: DropdownButton<int>(
+                                        value: _groupValue[index],
+                                        padding: const EdgeInsets.all(0),
+                                        borderRadius: BorderRadius.circular(12),
+                                        dropdownColor: Theme.of(context).colorScheme.background,
+                                        icon: const SizedBox(height: 0, width: 0),
+                                        underline: const SizedBox(height: 0, width: 0),
+                                        hint: const Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: Icon(Icons.arrow_drop_down_circle, color: Colors.white, size: 40),
+                                        ),
+                                        itemHeight: 60,
+                                        items: List.generate(
+                                            _lobbyData['users'].length,
+                                            (index) => DropdownMenuItem<int>(
+                                                  value: index + 1,
+                                                  child: Container(
+                                                    clipBehavior: Clip.antiAlias,
+                                                    width: 60,
+                                                    height: 60,
+                                                    decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/grupa_${index + 1}.png'))),
+                                                  ),
+                                                )),
+                                        onChanged: (value) => _dropDownHandler(value, index),
+                                      ),
                                     )
                                   : const SizedBox(height: 0), // to do: dynamiczne wyswietlanie stanu grupy dla nie adminow
                             ),

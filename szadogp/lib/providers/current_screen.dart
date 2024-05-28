@@ -11,5 +11,5 @@ final currentScreenProvider = StateProvider<Widget>((ref) {
   }
 
   return const LoginScreen();
-  // return const HomeScreen(); //uncomment for degug
+  // return const SummaryScreen(); //uncomment for degug
 });

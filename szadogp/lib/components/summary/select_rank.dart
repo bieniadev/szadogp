@@ -30,7 +30,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 48 * _players.length.toDouble() + (_players.length.toDouble() * 10) - 10,
+      height: 60 * _players.length.toDouble() + (_players.length.toDouble() * 10) - 10,
       child: ListView.separated(
         padding: const EdgeInsets.all(0),
         physics: const NeverScrollableScrollPhysics(),
@@ -60,11 +60,26 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
               const SizedBox(width: 8),
               DropdownButton<int>(
                   value: _groupValue[index],
+                  padding: const EdgeInsets.all(0),
+                  borderRadius: BorderRadius.circular(12),
+                  dropdownColor: Theme.of(context).colorScheme.background,
+                  icon: const SizedBox(height: 0, width: 0),
+                  underline: const SizedBox(height: 0, width: 0),
+                  hint: const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Icon(Icons.arrow_drop_down_circle, color: Colors.white, size: 40),
+                  ),
+                  itemHeight: 60,
                   items: List.generate(
                       _players.length,
                       (index) => DropdownMenuItem<int>(
                             value: index + 1,
-                            child: Text('${index + 1}', style: GoogleFonts.rubikMonoOne(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white70)),
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(image: DecorationImage(image: AssetImage('assets/${index + 1}_miejsce.png'))),
+                            ),
                           )),
                   onChanged: (value) {
                     setState(() {
