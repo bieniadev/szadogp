@@ -12,7 +12,7 @@ class UserRecentlyGames extends StatelessWidget {
     return userStatsData.isEmpty
         ? Padding(
             padding: const EdgeInsets.only(top: 10),
-            child: Text('Tu pojawi się twoja historia gier', style: GoogleFonts.rubik(fontSize: 18)),
+            child: Text('Tu pojawi się twoja historia gier', style: GoogleFonts.rubik(fontSize: 18), textAlign: TextAlign.center),
           )
         : ListView.builder(
             padding: const EdgeInsets.all(0),
@@ -27,7 +27,7 @@ class UserRecentlyGames extends StatelessWidget {
                   color: index % 2 == 0 ? Colors.black.withOpacity(0.15) : Colors.black.withOpacity(0.25),
                   child: Row(
                     children: [
-                      userStatsData[index]['isWinner'] // check for place
+                      userStatsData[index]['isWinner'] // check is winner
                           ? Container(
                               height: 80,
                               width: 55,
@@ -60,30 +60,40 @@ class UserRecentlyGames extends StatelessWidget {
                                     endIndent: 18,
                                     indent: 18,
                                   ),
-                                  Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 11)),
+                                  Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 12)),
                                 ],
                               ),
                             ),
                       const SizedBox(width: 10),
                       Container(
                         clipBehavior: Clip.hardEdge,
-                        width: 150,
+                        width: 110,
                         decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                         child: Image.network(userStatsData[index]['boardGameId']['imageUrl'], fit: BoxFit.cover, height: 70),
                       ),
                       const SizedBox(width: 8),
-                      Icon(Icons.emoji_events_sharp, size: 40, color: Colors.amber[400]), // to do: wstawic tu img pucharka
+                      Image.asset('assets/puchar.png', height: 35, width: 35),
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 1,
                         child: SizedBox(
-                          height: 23 * winnersTeam.length.toDouble(),
+                          height: winnersTeam.length == 1 ? 24 + 6 : 24 * winnersTeam.length.toDouble() + 6,
                           width: 20,
-                          child: ListView.builder(
+                          child: ListView.separated(
                             padding: const EdgeInsets.all(0),
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: winnersTeam.length,
-                            itemBuilder: (context, index) => Text(winnersTeam[index]),
+                            separatorBuilder: (context, index) => const SizedBox(height: 6),
+                            itemBuilder: (context, index) => Row(
+                              children: [
+                                winnersTeam.length == 1 ? const CircleAvatar(radius: 15) : const CircleAvatar(radius: 12), // to do: avatar
+                                const SizedBox(width: 6),
+                                Text(
+                                  winnersTeam[index],
+                                  style: winnersTeam.length == 1 ? const TextStyle(fontSize: 16) : const TextStyle(fontSize: 13),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),

@@ -5,7 +5,6 @@ import 'package:szadogp/components/user-stats/user_banner_appbar.dart';
 import 'package:szadogp/components/user-stats/user_recentlygames.dart';
 import 'package:szadogp/components/user-stats/user_settings_panel.dart';
 import 'package:szadogp/components/user-stats/user_stats.dart';
-
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/user_data.dart';
@@ -18,9 +17,8 @@ class UserStatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataProvider);
-    // final userInfo = ref.read(userInfoProvider);
-    final userTestStats = ref.read(testUserStatsProvider);
+    final userData = ref.watch(userDataProvider); // uncomment
+    List<dynamic> userTestStats = ref.read(testUserStatsProvider);
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     void logOut() {
@@ -38,8 +36,6 @@ class UserStatsScreen extends ConsumerWidget {
           return Scaffold(
               extendBodyBehindAppBar: true,
               key: scaffoldKey,
-
-              // appBar: UserBannerAppbar(scaffoldKey: scaffoldKey),
               endDrawer: UserSettingsPanel(userInfo: data, logOut: logOut),
               //appbar z tlem
               body: NestedScrollView(
@@ -56,7 +52,7 @@ class UserStatsScreen extends ConsumerWidget {
         },
         loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
         error: (err, s) {
-          return Scaffold(body: Center(child: Text('$err')));
+          return Scaffold(body: Center(child: Text('$err', textAlign: TextAlign.center)));
         });
   }
 }
