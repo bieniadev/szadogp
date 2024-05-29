@@ -34,7 +34,7 @@ class UserRecentlyGames extends StatelessWidget {
                           ? Container(
                               height: 80,
                               width: 55,
-                              color: Colors.blue[400],
+                              color: const Color.fromARGB(255, 99, 114, 250),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -52,7 +52,7 @@ class UserRecentlyGames extends StatelessWidget {
                           : Container(
                               height: 80,
                               width: 55,
-                              color: Colors.red[400],
+                              color: const Color.fromARGB(255, 250, 99, 99),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
