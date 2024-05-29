@@ -3,9 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/screens/game_details.dart';
 
 class UserRecentlyGames extends StatelessWidget {
-  const UserRecentlyGames({super.key, required this.userStatsData});
+  const UserRecentlyGames({super.key, required this.userStatsData, required this.userData});
 
   final List<dynamic> userStatsData;
+  final Map<String, dynamic> userData;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +22,10 @@ class UserRecentlyGames extends StatelessWidget {
               List<dynamic> winnersTeam = userStatsData[index]['winnersGroup'];
               return InkWell(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => GameDetailsScreen(gameStatsData: userStatsData[index]),
-                )),
+                    builder: (context) => GameDetailsScreen(
+                          gameStatsData: userStatsData[index],
+                          userData: userData,
+                        ))),
                 child: Container(
                   color: index % 2 == 0 ? Colors.black.withOpacity(0.15) : Colors.black.withOpacity(0.25),
                   child: Row(
@@ -90,7 +93,7 @@ class UserRecentlyGames extends StatelessWidget {
                                 const SizedBox(width: 6),
                                 Text(
                                   winnersTeam[index],
-                                  style: winnersTeam.length == 1 ? const TextStyle(fontSize: 16) : const TextStyle(fontSize: 13),
+                                  style: winnersTeam.length == 1 ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),

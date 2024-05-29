@@ -5,6 +5,7 @@ import 'package:szadogp/components/user-stats/user_banner_appbar.dart';
 import 'package:szadogp/components/user-stats/user_recentlygames.dart';
 import 'package:szadogp/components/user-stats/user_settings_panel.dart';
 import 'package:szadogp/components/user-stats/user_stats.dart';
+import 'package:szadogp/models/k_debug_data.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/user_data.dart';
@@ -17,9 +18,12 @@ class UserStatsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataProvider); // uncomment
-    List<dynamic> userTestStats = ref.read(testUserStatsProvider);
+    // final userData = ref.watch(userDataProvider); // uncomment
+    List<dynamic> userStats = ref.read(testUserStatsProvider);
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+    final data = kDebugUserData;
+    userStats = kDebugStatsData;
 
     void logOut() {
       Hive.box('user-token').delete(1);
@@ -31,28 +35,28 @@ class UserStatsScreen extends ConsumerWidget {
       Navigator.of(context).pop();
     }
 
-    return userData.when(
-        data: (data) {
-          return Scaffold(
-              extendBodyBehindAppBar: true,
-              key: scaffoldKey,
-              endDrawer: UserSettingsPanel(userInfo: data, logOut: logOut),
-              //appbar z tlem
-              body: NestedScrollView(
-                  floatHeaderSlivers: true,
-                  headerSliverBuilder: (context, innerBoxIsScrolled) => [UserBannerAppbar(scaffoldKey: scaffoldKey, username: data['username'])],
-                  body: Column(
-                    children: [
-                      // overal stats user/podsumowanie
-                      const UserStats(),
-                      // lista z recent played grami
-                      Expanded(child: UserRecentlyGames(userStatsData: userTestStats)),
-                    ],
-                  )));
-        },
-        loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (err, s) {
-          return Scaffold(body: Center(child: Text('$err', textAlign: TextAlign.center)));
-        });
+    // return userData.when(
+    //     data: (data) {
+    return Scaffold(
+        extendBodyBehindAppBar: true,
+        key: scaffoldKey,
+        endDrawer: UserSettingsPanel(userInfo: data, logOut: logOut),
+        //appbar z tlem
+        body: NestedScrollView(
+            floatHeaderSlivers: true,
+            headerSliverBuilder: (context, innerBoxIsScrolled) => [UserBannerAppbar(scaffoldKey: scaffoldKey, username: data['username'])],
+            body: Column(
+              children: [
+                // overal stats user/podsumowanie
+                const UserStats(),
+                // lista z recent played grami
+                Expanded(child: UserRecentlyGames(userStatsData: userStats, userData: data)),
+              ],
+            )));
+    // },
+    // loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
+    // error: (err, s) {
+    //   return Scaffold(body: Center(child: Text('$err', textAlign: TextAlign.center)));
+    // });
   }
 }
