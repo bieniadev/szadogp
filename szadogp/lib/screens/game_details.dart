@@ -151,7 +151,7 @@ class GameDetailsScreen extends StatelessWidget {
                       //   ),
                       // ),
                       const Spacer(),
-                      Image.asset('grupa_${index + 1}.png'),
+                      Image.asset('assets/grupa_${index + 1}.png'),
                       const SizedBox(width: 10),
                     ],
                   );
