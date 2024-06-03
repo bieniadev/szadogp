@@ -10,7 +10,7 @@ import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/running_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
 import 'package:szadogp/providers/user_data.dart';
-import 'package:szadogp/screens/game_summary.dart';
+import 'package:szadogp/screens/summary_game.dart';
 
 class RunningGameScreen extends ConsumerWidget {
   const RunningGameScreen({super.key});
