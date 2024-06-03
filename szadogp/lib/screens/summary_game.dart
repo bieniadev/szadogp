@@ -33,6 +33,7 @@ class SummaryScreen extends ConsumerWidget {
     String formattedTimerValue = '${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
 
     Future<void> sendDataToDatabase(SummaryData summaryData) async {
+      //   print('ZDJECIE: $choosenImage');
       List<Ranking> rankingList = ref.read(rankingProvider);
       SummaryRankingToSend dataToCheck = SummaryRankingToSend(
         ranking: rankingList,

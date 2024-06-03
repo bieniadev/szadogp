@@ -20,11 +20,14 @@ class UserRecentlyGames extends StatelessWidget {
             itemCount: userStatsData.length,
             itemBuilder: (context, index) {
               List<dynamic> winnersTeam = userStatsData[index]['winnersGroup'];
+              print('Rozegrane gry: ${userStatsData[index]}');
               return InkWell(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => GameDetailsScreen(
                           gameStatsData: userStatsData[index],
                           userData: userData,
+                          //   gameId: userStatsData[index]['_id'], to do: poprosic api o zwrot id gry
+                          gameId: '665ddca008191a010c4c1743',
                         ))),
                 child: Container(
                   color: index % 2 == 0 ? Colors.black.withOpacity(0.15) : Colors.black.withOpacity(0.25),
