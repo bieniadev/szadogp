@@ -1,4 +1,4 @@
-# Sigma?
+# Sigma
 
 S.Z.A.DO GP -> Rozszyfrować hasło
 
