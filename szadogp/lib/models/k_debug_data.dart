@@ -103,6 +103,33 @@
 //   },
 // ];
 
+import 'package:szadogp/models/models_summary_screen.dart';
+
+SummaryData kDebugSummaryData = SummaryData(
+  id: 'asdadsadas',
+  boardGameId: {'_id': '663d12b800edff98b2c91d8d', 'name': 'Terraformacja Marsa', 'imageUrl': 'https://ik.imagekit.io/szadogp/terraformacja-marsa.jpg?updatedAt=1715278480856'},
+  creatorId: '663d2d6bb91965ae304f4394',
+  users: [
+    UserInfo(id: '663d2d6bb91965ae304f4394', username: 'sigma1337'),
+  ],
+  groups: [
+    TeamGroups(
+      groupIdentifier: 1,
+      users: [
+        UserInfo(id: '663d2d6bb91965ae304f4394', username: 'sigma1337'),
+      ],
+    ),
+    TeamGroups(
+      groupIdentifier: 2,
+      users: [
+        UserInfo(id: '663a7572cf6ea2b33f6e8804', username: 'Benia'),
+        UserInfo(id: '13252rsfs3wstwe4ts32353e', username: 'Degugger'),
+      ],
+    )
+  ],
+);
+
+
 
 // class GameSummary {
 //   String id;

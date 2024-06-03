@@ -42,7 +42,7 @@ class _SelectRankingState extends ConsumerState<SelectRanking> {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('TEAM ${index + 1}'),
+              Image.asset('assets/grupa_${index + 1}.png', width: 55),
               const SizedBox(width: 12),
               Expanded(
                 child: ListView.builder(
