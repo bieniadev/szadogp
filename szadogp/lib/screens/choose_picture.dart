@@ -20,17 +20,22 @@ class ChoosePictureScreenState extends ConsumerState<ChoosePictureScreen> {
   _chooseImageByGallery(WidgetRef ref) async {
     final XFile? returnedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
     ref.read(isLoadingProvider.notifier).state = false;
-    _choosenImage = returnedImage;
+    if (returnedImage != null) {
+      setState(() => _choosenImage = returnedImage);
+    }
   }
 
   _chooseImageByTakingPhoto(WidgetRef ref) async {
     final XFile? returnedImage = await ImagePicker().pickImage(source: ImageSource.camera);
     ref.read(isLoadingProvider.notifier).state = false;
-    _choosenImage = returnedImage;
+    if (returnedImage != null) {
+      setState(() => _choosenImage = returnedImage);
+    }
   }
 
   _confirmImage(WidgetRef ref) {
     ref.read(choosenImageProvider.notifier).state = _choosenImage;
+    ref.read(isLoadingProvider.notifier).state = false;
     Navigator.of(context).pop();
   }
 

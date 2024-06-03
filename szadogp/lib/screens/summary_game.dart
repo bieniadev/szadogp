@@ -136,21 +136,13 @@ class SummaryScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               SummarySection(
-                text: 'Notatka',
-                widget: TextField(
-                  controller: noteController,
-                  minLines: 3,
-                  maxLines: 5,
-                  style: GoogleFonts.rubik(fontSize: 15),
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.grey), borderRadius: BorderRadius.circular(8))),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SummarySection(
                 text: 'Zdjęcie',
                 widget: GestureDetector(
-                  onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChoosePictureScreen())),
+                  onTap: () {
+                    //unfocus keyboard
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChoosePictureScreen()));
+                  },
                   child: choosenImage == null
                       ? Container(
                           decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade600), borderRadius: BorderRadius.circular(8)),
@@ -162,10 +154,26 @@ class SummaryScreen extends ConsumerWidget {
                           ),
                         )
                       : Container(
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
                           decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade600), borderRadius: BorderRadius.circular(8)),
-                          padding: const EdgeInsets.symmetric(vertical: 20),
-                          child: Image.file(File(choosenImage.path)),
+                          child: Image.file(
+                            File(choosenImage.path),
+                            width: double.infinity,
+                            // height: 100,
+                          ),
                         ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SummarySection(
+                text: 'Notatka',
+                widget: TextField(
+                  controller: noteController,
+                  minLines: 3,
+                  maxLines: 5,
+                  style: GoogleFonts.rubik(fontSize: 15),
+                  textCapitalization: TextCapitalization.sentences,
+                  decoration: InputDecoration(border: OutlineInputBorder(borderSide: const BorderSide(color: Colors.grey), borderRadius: BorderRadius.circular(8))),
                 ),
               ),
               const SizedBox(height: 20),
