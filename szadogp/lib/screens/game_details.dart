@@ -14,12 +14,29 @@ class GameDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gameDetailsFuture = ref.watch(gameDetailsFutureProvider('id'));
+    final gameDetailsFuture = ref.watch(gameDetailsFutureProvider(gameId));
 
     return gameDetailsFuture.when(
-      data: (data) {
-        print('DATA: $data');
-        const int itemLength = 6; // for debug delet
+      data: (result) {
+        String isoDate = result['finishedAt'];
+        DateTime parsedDate = DateTime.parse(isoDate);
+        DateTime now = DateTime.now();
+        Duration difference = now.difference(parsedDate);
+
+        int daysDifference = difference.inDays;
+        int hoursDifference = difference.inHours;
+
+        late String formattedDate;
+        if (daysDifference == 0) {
+          if (hoursDifference == 0) {
+            formattedDate = 'Przed chwilą';
+          } else {
+            formattedDate = 'Upłynęło $hoursDifference godzin';
+          }
+        } else {
+          formattedDate = 'Upłynęło $daysDifference dni';
+        }
+
         final String isWinnerText = gameStatsData['isWinner'] ? 'Zwycięstwo' : 'Porażka';
         return Scaffold(
           appBar: AppBar(
@@ -37,18 +54,12 @@ class GameDetailsScreen extends ConsumerWidget {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                ShaderMask(
-                  shaderCallback: (rect) {
-                    return const LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.black, Colors.transparent],
-                    ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                  },
-                  blendMode: BlendMode.dstIn,
+                Container(
+                  height: 180,
+                  color: gameStatsData['isWinner'] ? const Color.fromARGB(255, 209, 180, 77) : const Color.fromARGB(255, 250, 99, 99), // to do: dynamiczny kolor zwyciezcy
+
                   child: Container(
-                    height: 180,
-                    color: gameStatsData['isWinner'] ? const Color.fromARGB(255, 209, 180, 77) : const Color.fromARGB(255, 250, 99, 99), // to do: dynamiczny kolor zwyciezcy
+                    decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.black.withOpacity(0.55), Colors.transparent], end: Alignment.topCenter, begin: Alignment.bottomCenter)),
                     padding: const EdgeInsets.all(18),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -59,7 +70,7 @@ class GameDetailsScreen extends ConsumerWidget {
                           children: [
                             Text(gameStatsData['boardGameId']['name'], style: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w400)),
                             Container(width: 3, height: 16, margin: const EdgeInsets.symmetric(horizontal: 5), decoration: BoxDecoration(color: Colors.grey[500], borderRadius: BorderRadius.circular(10))),
-                            Text('2 dni temu', style: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w400)),
+                            Text(formattedDate, style: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w400)),
                             Container(width: 3, height: 16, margin: const EdgeInsets.symmetric(horizontal: 5), decoration: BoxDecoration(color: Colors.grey[500], borderRadius: BorderRadius.circular(10))),
                             Text(gameStatsData['time'], style: GoogleFonts.rubik(fontSize: 15, fontWeight: FontWeight.w400)),
                           ],
@@ -84,11 +95,11 @@ class GameDetailsScreen extends ConsumerWidget {
                 ),
                 Container(
                   color: Colors.black.withOpacity(0.1),
-                  height: 80 * itemLength.toDouble() + itemLength.toDouble() * 2 - 2,
+                  height: 80 * result['ranking'].length.toDouble() + result['ranking'].length.toDouble() * 2 - 2,
                   child: ListView.separated(
                     padding: const EdgeInsets.all(0),
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: itemLength,
+                    itemCount: result['ranking'].length,
                     separatorBuilder: (context, index) => Container(width: double.infinity, height: 2, color: Colors.grey[500]),
                     itemBuilder: (context, index) {
                       late String standing;
@@ -131,30 +142,26 @@ class GameDetailsScreen extends ConsumerWidget {
                             child: Text('${index + 1}$standing', style: GoogleFonts.rubikMonoOne(fontSize: 14)),
                           ),
                           const SizedBox(width: 12),
-                          const CircleAvatar(radius: 25),
-                          const SizedBox(width: 6),
-                          Text('Nickname', style: GoogleFonts.rubik(fontSize: 15)),
-                          // to do: display liste osob w grupie
-                          // SizedBox(
-                          //   height: gameStatsData['winnersGroup'].length == 1 ? 24 + 6 : 24 * gameStatsData['winnersGroup'].length.toDouble() + 6,
-                          //   width: 20,
-                          //   child: ListView.separated(
-                          //     padding: const EdgeInsets.all(0),
-                          //     physics: const NeverScrollableScrollPhysics(),
-                          //     itemCount: gameStatsData['winnersGroup'].length,
-                          //     separatorBuilder: (context, index) => const SizedBox(height: 6),
-                          //     itemBuilder: (context, index) => Row(
-                          //       children: [
-                          //         gameStatsData['winnersGroup'].length == 1 ? const CircleAvatar(radius: 15) : const CircleAvatar(radius: 12), // to do: avatar
-                          //         const SizedBox(width: 6),
-                          //         Text(
-                          //           gameStatsData['winnersGroup'][index],
-                          //           style: gameStatsData['winnersGroup'].length == 1 ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 13),
-                          //         ),
-                          //       ],
-                          //     ),
-                          //   ),
-                          // ),
+                          SizedBox(
+                            height: result['ranking'][index]['users'].length == 1 ? 42 + 6 : 24 * result['ranking'].length.toDouble() + 6,
+                            width: 200,
+                            child: ListView.separated(
+                              padding: const EdgeInsets.all(0),
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: result['ranking'][index]['users'].length,
+                              separatorBuilder: (context, index) => const SizedBox(height: 6),
+                              itemBuilder: (context, idx) => Row(
+                                children: [
+                                  result['ranking'][index]['users'].length == 1 ? const CircleAvatar(radius: 24) : const CircleAvatar(radius: 12), // to do: avatar
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    result['ranking'][index]['users'][idx],
+                                    style: result['ranking'][index]['users'].length == 1 ? const TextStyle(fontSize: 15) : const TextStyle(fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           const Spacer(),
                           Image.asset('assets/grupa_${index + 1}.png'),
                           const SizedBox(width: 10),
@@ -164,11 +171,11 @@ class GameDetailsScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 22),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 10, right: 16, left: 16),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10, right: 16, left: 16),
                   child: SummarySection(
                     text: 'Notatka',
-                    widget: Text('sample text notatki'), //to do: read notatka from api
+                    widget: Text(result['note']),
                   ),
                 ),
                 const Padding(

@@ -243,7 +243,6 @@ class ApiServices {
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      print(result);
       return result;
     } else {
       throw Exception(response.reasonPhrase);

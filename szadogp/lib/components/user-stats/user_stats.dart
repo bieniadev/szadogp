@@ -27,7 +27,7 @@ class UserStats extends StatelessWidget {
               Expanded(
                 child: UserCardRounded(
                     child: Text(
-                  'Sub karta', //
+                  'Sub karta',
                   style: GoogleFonts.rubik(fontSize: 20, fontWeight: FontWeight.w400),
                 )),
               ),
