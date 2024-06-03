@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/summary/summary_section.dart';
+import 'package:szadogp/providers/game_details.dart';
 
-class GameDetailsScreen extends StatelessWidget {
+class GameDetailsScreen extends ConsumerWidget {
   const GameDetailsScreen({
     super.key,
     required this.gameStatsData,
@@ -13,7 +15,17 @@ class GameDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> userData;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final gameDetailsFuture = ref.watch(gameDetailsFutureProvider);
+
+    // gameDetailsFuture.when(
+    //   data: (data) {
+    //     return;
+    //   },
+    //   error: (error, stackTrace) => const Center(child: Text('Wystąpił błąd podczas wczytywania danych gry.', textAlign: TextAlign.center)),
+    //   loading: () => const Center(child: CircularProgressIndicator()),
+    // );
+
     const int itemLength = 6; // for debug delet
     final String isWinnerText = gameStatsData['isWinner'] ? 'Zwycięstwo' : 'Porażka';
     return Scaffold(

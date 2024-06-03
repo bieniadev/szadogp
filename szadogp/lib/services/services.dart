@@ -235,7 +235,7 @@ class ApiServices {
   }
 
   //get selected game details player
-  Future<dynamic> getGameDetails() async {
+  Future<Map<String, dynamic>> getGameDetails() async {
     final token = await Hive.box('user-token').get(1);
     final uri = Uri.parse('$baseUrl/api/games/???');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
