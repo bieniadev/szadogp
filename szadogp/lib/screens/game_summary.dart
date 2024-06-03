@@ -109,18 +109,17 @@ class SummaryScreen extends ConsumerWidget {
                     return;
                   }
 
-                  List<int> rankNumbers = rankingList.map((e) => e.place).toList();
-
                   //check if same rankings occurs
-                  if (!isUnique(rankNumbers)) {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      duration: Duration(seconds: 3),
-                      content: Text('Ten sam ranking występuje w kilku drużynach!'),
-                      backgroundColor: Colors.red,
-                    ));
-                    ref.read(isLoadingProvider.notifier).state = false;
-                    return;
-                  }
+                  // List<int> rankNumbers = rankingList.map((e) => e.place).toList();
+                  // if (!isUnique(rankNumbers)) {
+                  //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  //     duration: Duration(seconds: 3),
+                  //     content: Text('Ten sam ranking występuje w kilku drużynach!'),
+                  //     backgroundColor: Colors.red,
+                  //   ));
+                  //   ref.read(isLoadingProvider.notifier).state = false;
+                  //   return;
+                  // }
 
                   if (noteController.text.isEmpty || noteController.text == '') {
                     noteController.text = 'Brak notatki...';
