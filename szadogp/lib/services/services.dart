@@ -42,7 +42,7 @@ class ApiServices {
   //userinfo
   Future<Map<String, dynamic>> getUserInfo() async {
     final token = await Hive.box('user-token').get(1);
-    final uri = Uri.parse('$baseUrl/api/auth/me');
+    final uri = Uri.parse('$baseUrl/api/user-profile/profile');
     final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token'};
     Response response = await get(uri, headers: requestHeaders);
 

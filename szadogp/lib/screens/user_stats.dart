@@ -47,7 +47,8 @@ class UserStatsScreen extends ConsumerWidget {
                   body: Column(
                     children: [
                       // overal stats user/podsumowanie
-                      const UserStats(),
+                      UserStats(eloPoints: data['eloPoints']),
+
                       // lista z recent played grami
                       Expanded(child: UserRecentlyGames(userStatsData: userStats, userData: data)),
                     ],

@@ -5,7 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:szadogp/components/user-stats/user_card_rounded.dart';
 
 class UserStats extends StatelessWidget {
-  const UserStats({super.key});
+  const UserStats({super.key, required this.eloPoints});
+
+  final int eloPoints;
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +19,8 @@ class UserStats extends StatelessWidget {
             width: double.infinity,
             child: UserCardRounded(
               child: Text(
-                'Main karta',
-                style: GoogleFonts.commissioner(fontSize: 24, fontWeight: FontWeight.bold),
+                'ELO: $eloPoints',
+                style: GoogleFonts.rubik(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
           ),
