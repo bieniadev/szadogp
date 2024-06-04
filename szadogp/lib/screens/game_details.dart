@@ -16,27 +16,49 @@ class GameDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameDetailsFuture = ref.watch(gameDetailsFutureProvider(gameId));
 
+    String formatDate(String isoDate) {
+      DateTime parsedDate = DateTime.parse(isoDate);
+      DateTime now = DateTime.now();
+      Duration difference = now.difference(parsedDate);
+
+      int daysDifference = difference.inDays;
+      int hoursDifference = difference.inHours;
+
+      late String formattedDate;
+      if (daysDifference == 0) {
+        if (hoursDifference == 0) {
+          formattedDate = 'Przed chwilą';
+        } else {
+          formattedDate = 'Upłynęło $hoursDifference godzin';
+        }
+      } else {
+        formattedDate = 'Upłynęło $daysDifference dni';
+      }
+      return formattedDate;
+    }
+
     return gameDetailsFuture.when(
       data: (result) {
-        String isoDate = result['finishedAt'];
-        DateTime parsedDate = DateTime.parse(isoDate);
-        DateTime now = DateTime.now();
-        Duration difference = now.difference(parsedDate);
+        // String isoDate = result['finishedAt'];
+        // DateTime parsedDate = DateTime.parse(isoDate);
+        // DateTime now = DateTime.now();
+        // Duration difference = now.difference(parsedDate);
 
-        int daysDifference = difference.inDays;
-        int hoursDifference = difference.inHours;
+        // int daysDifference = difference.inDays;
+        // int hoursDifference = difference.inHours;
 
-        late String formattedDate;
-        if (daysDifference == 0) {
-          if (hoursDifference == 0) {
-            formattedDate = 'Przed chwilą';
-          } else {
-            formattedDate = 'Upłynęło $hoursDifference godzin';
-          }
-        } else {
-          formattedDate = 'Upłynęło $daysDifference dni';
-        }
+        // late String formattedDate;
+        // if (daysDifference == 0) {
+        //   if (hoursDifference == 0) {
+        //     formattedDate = 'Przed chwilą';
+        //   } else {
+        //     formattedDate = 'Upłynęło $hoursDifference godzin';
+        //   }
+        // } else {
+        //   formattedDate = 'Upłynęło $daysDifference dni';
+        // }
 
+        String formattedDate = formatDate(result['finishedAt']);
         final String isWinnerText = gameStatsData['isWinner'] ? 'Zwycięstwo' : 'Porażka';
         return Scaffold(
           appBar: AppBar(
