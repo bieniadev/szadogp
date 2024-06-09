@@ -14,6 +14,7 @@ import 'package:szadogp/providers/choosen_image.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
 import 'package:szadogp/providers/ranking.dart';
+import 'package:szadogp/providers/selected_image.dart';
 import 'package:szadogp/providers/summary_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
 import 'package:szadogp/screens/choose_picture.dart';
@@ -33,7 +34,6 @@ class SummaryScreen extends ConsumerWidget {
     String formattedTimerValue = '${(duration.inHours.toString())}:${(duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
 
     Future<void> sendDataToDatabase(SummaryData summaryData) async {
-      //   print('ZDJECIE: $choosenImage');
       List<Ranking> rankingList = ref.read(rankingProvider);
       SummaryRankingToSend dataToCheck = SummaryRankingToSend(
         ranking: rankingList,
@@ -179,7 +179,14 @@ class SummaryScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 20),
               ActionButton(
-                onTap: () => sendDataToDatabase(summaryData),
+                onTap: () {
+                  //   print('ZDJECIE: $choosenImage');
+                  //   print('ZDJECIE PATH: ${choosenImage!.path}');
+                  //   print(summaryDataGet);
+                  sendDataToDatabase(summaryData);
+                  ApiServices().uploadImageForGame(summaryData.id, choosenImage!.path);
+                  ref.read(selectedImageProvider.notifier).state = null;
+                },
                 hintText: 'ZAPISZ',
                 hasBorder: false,
               )

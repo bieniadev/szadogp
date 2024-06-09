@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/summary/summary_section.dart';
+import 'package:szadogp/providers/choosen_image.dart';
 import 'package:szadogp/providers/game_details.dart';
+import 'package:szadogp/providers/is_loading.dart';
+import 'package:szadogp/screens/choose_picture.dart';
+import 'package:szadogp/services/services.dart';
 
 class GameDetailsScreen extends ConsumerWidget {
   const GameDetailsScreen({super.key, required this.gameStatsData, required this.userData, required this.gameId});
@@ -15,6 +20,18 @@ class GameDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gameDetailsFuture = ref.watch(gameDetailsFutureProvider(gameId));
+    selectImage(String gameId) async {
+      await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChoosePictureScreen()));
+
+      XFile? chosenImage = ref.read(choosenImageProvider);
+
+      if (chosenImage != null) {
+        await ApiServices().uploadImageForGame(gameId, chosenImage.path);
+        //to do: zrobić refresh po wyslaniu
+      }
+
+      ref.read(isLoadingProvider.notifier).state = false;
+    }
 
     String formatDate(String isoDate) {
       DateTime parsedDate = DateTime.parse(isoDate);
@@ -29,16 +46,17 @@ class GameDetailsScreen extends ConsumerWidget {
         if (hoursDifference == 0) {
           formattedDate = 'Przed chwilą';
         } else {
-          formattedDate = 'Upłynęło $hoursDifference godzin';
+          formattedDate = '$hoursDifference godzin temu';
         }
       } else {
-        formattedDate = 'Upłynęło $daysDifference dni';
+        formattedDate = '$daysDifference dni temu';
       }
       return formattedDate;
     }
 
     return gameDetailsFuture.when(
       data: (result) {
+        // print(result);
         // String isoDate = result['finishedAt'];
         // DateTime parsedDate = DateTime.parse(isoDate);
         // DateTime now = DateTime.now();
@@ -200,17 +218,27 @@ class GameDetailsScreen extends ConsumerWidget {
                     widget: Text(result['note']),
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 10, right: 16, left: 16),
-                  child: SummarySection(
-                    text: 'Zdjęcie',
-                    widget: Icon(
-                      Icons.photo_camera_outlined,
-                      size: 60,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                result['imageUrl'] != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 10, right: 16, left: 16),
+                        child: SummarySection(
+                          text: 'Zdjęcie',
+                          widget: Image.network(result['imageUrl']),
+                        ))
+                    : GestureDetector(
+                        onTap: () => selectImage(result['_id']),
+                        child: const Padding(
+                          padding: EdgeInsets.only(bottom: 10, right: 16, left: 16),
+                          child: SummarySection(
+                            text: 'Zdjęcie',
+                            widget: Icon(
+                              Icons.photo_camera_outlined,
+                              size: 60,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

@@ -187,6 +187,26 @@ class ApiServices {
     }
   }
 
+  //upload image to database
+  Future<void> uploadImageForGame(String gameId, String path) async {
+    final token = await Hive.box('user-token').get(1);
+    final uri = Uri.parse('$baseUrl/api/game-manager/$gameId/upload-image');
+    var request = MultipartRequest('PUT', uri);
+    request.files.add(await MultipartFile.fromPath(
+      'file',
+      path,
+    ));
+    final Map<String, String> requestHeaders = {'Authorization': 'Bearer $token', 'Content-Type': 'multipart/form-data'}; //kys Content-Type
+    request.headers.addAll(requestHeaders);
+    StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      return;
+    } else {
+      throw Exception(response.reasonPhrase);
+    }
+  }
+
   //chceck for other players if game started and move then to runningGame screen
   Future<Map<String, dynamic>> checkIfGameStarted(String runningGameId) async {
     final token = await Hive.box('user-token').get(1);
