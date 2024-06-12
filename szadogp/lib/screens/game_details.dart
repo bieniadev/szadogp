@@ -31,7 +31,6 @@ class GameDetailsScreen extends ConsumerWidget {
         ref.invalidate(userStatsProvider);
         final List<dynamic> response = await ApiServices().getUserStats();
         ref.read(userRecentGamesProvider.notifier).state = response;
-        //to do: zrobić refresh po wyslaniu
       }
 
       ref.read(isLoadingProvider.notifier).state = false;
