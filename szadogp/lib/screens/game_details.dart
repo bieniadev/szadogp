@@ -7,6 +7,7 @@ import 'package:szadogp/components/summary/summary_section.dart';
 import 'package:szadogp/providers/choosen_image.dart';
 import 'package:szadogp/providers/game_details.dart';
 import 'package:szadogp/providers/is_loading.dart';
+import 'package:szadogp/providers/user_stats.dart';
 import 'package:szadogp/screens/choose_picture.dart';
 import 'package:szadogp/services/services.dart';
 
@@ -27,6 +28,9 @@ class GameDetailsScreen extends ConsumerWidget {
 
       if (chosenImage != null) {
         await ApiServices().uploadImageForGame(gameId, chosenImage.path);
+        ref.invalidate(userStatsProvider);
+        final List<dynamic> response = await ApiServices().getUserStats();
+        ref.read(userRecentGamesProvider.notifier).state = response;
         //to do: zrobić refresh po wyslaniu
       }
 
