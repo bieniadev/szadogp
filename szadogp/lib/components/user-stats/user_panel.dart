@@ -64,7 +64,7 @@ class _UserPanelState extends ConsumerState<UserPanel> {
 
                   try {
                     final List<dynamic> response = await ApiServices().getUserStats();
-                    ref.read(testUserStatsProvider.notifier).state = response;
+                    ref.read(userRecentGamesProvider.notifier).state = response;
                   } catch (err) {
                     setState(() => _isLoading = false);
                     throw Exception('$err');

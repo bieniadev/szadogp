@@ -18,11 +18,11 @@ class UserStatsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(userDataProvider); // uncomment
-    List<dynamic> userStats = ref.read(testUserStatsProvider);
+    List<dynamic> userRecentGames = ref.read(userRecentGamesProvider);
     final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     // final data = kDebugUserData;
-    // userStats = kDebugStatsData;
+    // userRecentGames = kDebugStatsData;
 
     void logOut() {
       Hive.box('user-token').delete(1);
@@ -50,7 +50,7 @@ class UserStatsScreen extends ConsumerWidget {
                       UserStats(eloPoints: data['eloPoints']),
 
                       // lista z recent played grami
-                      Expanded(child: UserRecentlyGames(userStatsData: userStats, userData: data)),
+                      Expanded(child: UserRecentlyGames(userStatsData: userRecentGames, userData: data)),
                     ],
                   )));
         },
