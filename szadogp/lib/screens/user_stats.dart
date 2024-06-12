@@ -30,6 +30,7 @@ class UserStatsScreen extends ConsumerWidget {
       ref.read(userTokenProvider.notifier).state = '';
       ref.read(currentScreenProvider.notifier).state = const LoginScreen();
       ref.read(isLoadingProvider.notifier).state = false;
+      ref.invalidate(userDataProvider);
       Navigator.of(context).pop();
       Navigator.of(context).pop();
     }
