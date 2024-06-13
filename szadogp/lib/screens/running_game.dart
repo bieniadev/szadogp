@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/components/timer.dart';
@@ -17,9 +18,12 @@ class RunningGameScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Map<String, dynamic> lobbyData = ref.read(runningGameProvider);
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
-
+    Map<String, dynamic> lobbyData = ref.read(runningGameProvider);
+    if (lobbyData.isEmpty) {
+      final lobbyLocalData = Hive.box('user-token').get(3);
+      lobbyData = lobbyLocalData;
+    }
     final bool isAdmin = lobbyData['creatorId'] == userInfo['_id'];
 
     Duration timerValue = const Duration();

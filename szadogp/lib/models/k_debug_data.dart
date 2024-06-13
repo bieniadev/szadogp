@@ -28,6 +28,7 @@
 // Map<String, dynamic> kDebugUserData = {
 //   '_id': '663d2d6bb91965ae304f4394',
 //   'username': 'sigma1337',
+//   'eloPoints': 1338,
 // };
 
 // List<dynamic> kDebugStatsData = [

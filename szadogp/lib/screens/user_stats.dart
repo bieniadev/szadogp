@@ -56,8 +56,6 @@ class UserStatsScreen extends ConsumerWidget {
                   )));
         },
         loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-        error: (err, s) {
-          return Scaffold(body: Center(child: Text('$err', textAlign: TextAlign.center)));
-        });
+        error: (err, s) => Scaffold(body: Center(child: Text('$err', textAlign: TextAlign.center))));
   }
 }

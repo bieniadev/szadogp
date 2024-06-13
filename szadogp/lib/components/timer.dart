@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
@@ -80,7 +81,6 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
 
   @override
   Widget build(BuildContext context) {
-    // print(_duration.inSeconds); // ile sekund zeby zapisac do bazy
     _timerValue = '${(_duration.inHours.toString()).padLeft(2, '0')}:${(_duration.inMinutes.remainder(60).toString()).padLeft(2, '0')}:${(_duration.inSeconds.remainder(60).toString()).padLeft(2, '0')}';
     return Column(
       children: [
@@ -93,7 +93,7 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
                   try {
                     final Map<String, dynamic> response = await ApiServices().finishGame(widget.gameId);
                     ref.read(summaryGameProvider.notifier).state = response;
-
+                    Hive.box('user-token').delete(3);
                     widget.finishGame(_duration);
                     _timer!.cancel();
                     ref.read(isLoadingProvider.notifier).state = false;
@@ -123,6 +123,7 @@ class _TimerState extends ConsumerState<StopwatchTimer> {
                       ));
                     }
                     _timer!.cancel();
+
                     ref.read(isLoadingProvider.notifier).state = false;
                   } catch (err) {
                     ref.read(isLoadingProvider.notifier).state = false;

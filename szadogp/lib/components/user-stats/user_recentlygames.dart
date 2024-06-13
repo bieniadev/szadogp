@@ -20,6 +20,9 @@ class UserRecentlyGames extends StatelessWidget {
             itemCount: userStatsData.length,
             itemBuilder: (context, index) {
               List<dynamic> winnersTeam = userStatsData[index]['winnersGroup'];
+              if (userStatsData[index]['netElo'] == null) {
+                userStatsData[index]['netElo'] = 0;
+              }
               return InkWell(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => GameDetailsScreen(
@@ -39,12 +42,19 @@ class UserRecentlyGames extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text('W', style: TextStyle(fontSize: 20)),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('W', style: TextStyle(fontSize: 16)),
+                                      const SizedBox(width: 4),
+                                      Text('+${userStatsData[index]['netElo']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
                                   const Divider(
                                     color: Colors.white,
                                     thickness: 2,
-                                    endIndent: 18,
-                                    indent: 18,
+                                    endIndent: 12,
+                                    indent: 12,
                                   ),
                                   Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 12)),
                                 ],
@@ -57,12 +67,19 @@ class UserRecentlyGames extends StatelessWidget {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  const Text('L', style: TextStyle(fontSize: 20)),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('L', style: TextStyle(fontSize: 16)),
+                                      const SizedBox(width: 4),
+                                      Text('-${userStatsData[index]['netElo']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
                                   const Divider(
                                     color: Colors.white,
                                     thickness: 2,
-                                    endIndent: 18,
-                                    indent: 18,
+                                    endIndent: 12,
+                                    indent: 12,
                                   ),
                                   Text(userStatsData[index]['time'], style: const TextStyle(fontSize: 12)),
                                 ],

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
@@ -68,6 +69,7 @@ class AdvancedActionButton extends ConsumerWidget {
 
                 final Map<String, dynamic> response = await ApiServices().startGame(fixedGroups, lobbyData['_id']);
                 ref.read(runningGameProvider.notifier).state = response;
+                Hive.box('user-token').put(3, response);
                 ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
                 ref.read(isLoadingProvider.notifier).state = false;
                 timer!.cancel();
