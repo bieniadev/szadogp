@@ -15,5 +15,5 @@ final currentScreenProvider = StateProvider<Widget>((ref) {
     return const HomeScreen();
   }
   return const LoginScreen();
-  // return const RunningGameScreen(); //uncomment for degug
+  // return const OptionsTerraformingMars(); //uncomment for degug
 });

@@ -99,8 +99,7 @@ class GameDetailsScreen extends ConsumerWidget {
               children: [
                 Container(
                   height: 180,
-                  color: gameStatsData['isWinner'] ? const Color.fromARGB(255, 209, 180, 77) : const Color.fromARGB(255, 250, 99, 99), // to do: dynamiczny kolor zwyciezcy
-
+                  color: gameStatsData['isWinner'] ? const Color.fromARGB(255, 209, 180, 77) : const Color.fromARGB(255, 250, 99, 99),
                   child: Container(
                     decoration: BoxDecoration(gradient: LinearGradient(colors: [Colors.black.withOpacity(0.55), Colors.transparent], end: Alignment.topCenter, begin: Alignment.bottomCenter)),
                     padding: const EdgeInsets.all(18),

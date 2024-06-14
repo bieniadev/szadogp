@@ -8,6 +8,7 @@ import 'package:szadogp/components/image_border.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
+import 'package:szadogp/providers/options_gamebutton.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/services/services.dart';
@@ -134,6 +135,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider); //uncoment
     Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncoment
+    List<Widget> optionsWidget = ref.read(optionsButtonProvider);
 
     _lobbyId = _lobbyData['_id'];
     //check for admin
@@ -154,6 +156,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
               // to do: funckja do usuwania gry z bazy danych
             },
             icon: const Icon(Icons.hotel_rounded)),
+        actions: optionsWidget,
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 5, left: 20, right: 20, bottom: 4),

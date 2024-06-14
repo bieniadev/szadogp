@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? customExitButton;
   final Widget? title;
+  final List<Widget>? actions;
   const LogoAppbar({
     super.key,
     this.customExitButton,
     this.title,
+    this.actions,
   });
 
   @override
@@ -14,6 +16,7 @@ class LogoAppbar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       title: title,
       centerTitle: true,
+      actions: actions,
       elevation: 5,
       leading: customExitButton,
       backgroundColor: const Color.fromARGB(255, 60, 52, 77),

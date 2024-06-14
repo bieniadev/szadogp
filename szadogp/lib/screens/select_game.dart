@@ -5,8 +5,10 @@ import 'package:szadogp/components/logo_appbar.dart';
 import 'package:szadogp/providers/boardgames_data.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/lobby.dart';
+import 'package:szadogp/providers/options_gamebutton.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/lobby.dart';
+import 'package:szadogp/screens/options/options_terraforming_mars.dart';
 import 'package:szadogp/services/services.dart';
 
 class SelectGameScreen extends ConsumerWidget {
@@ -14,8 +16,23 @@ class SelectGameScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    List<Widget> optionsButtonHandler(String boardgameName) {
+      switch (boardgameName) {
+        case 'Terraformacja Marsa':
+          return [
+            IconButton(
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const OptionsTerraformingMars())),
+              icon: const Icon(Icons.help),
+            )
+          ];
+
+        default:
+          return [];
+      }
+    }
+
     //wyslanie kody do api z wybrana gra i po sukcesie stworzenie pokoju i przejscie do jego ekranu
-    selectGame(boardgameId) async {
+    selectGame(boardgameId, boardgameName) async {
       try {
         //funckja ktora wysyla do providera dane o calym lobby
         final lobbyData = await ApiServices().createGame(boardgameId);
@@ -25,6 +42,7 @@ class SelectGameScreen extends ConsumerWidget {
         ref.read(userInfoProvider.notifier).state = userInfo;
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
+        ref.read(optionsButtonProvider.notifier).state = optionsButtonHandler(boardgameName);
         ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
       } catch (err) {
         // ignore: use_build_context_synchronously
@@ -39,9 +57,7 @@ class SelectGameScreen extends ConsumerWidget {
     final boardgamesData = ref.watch(boardgamesDataProvider);
 
     return Scaffold(
-        appBar: LogoAppbar(
-          title: Image.asset('assets/images/logo.png', height: 30),
-        ),
+        appBar: LogoAppbar(title: Image.asset('assets/images/logo.png', height: 30)),
         body: boardgamesData.when(
             data: (boardgamesList) {
               return Padding(
@@ -51,7 +67,7 @@ class SelectGameScreen extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         //on select game function
-                        onTap: () => selectGame(boardgamesList[index]['_id']),
+                        onTap: () => selectGame(boardgamesList[index]['_id'], boardgamesList[index]['name']),
                         child: ImageRounded(imageUrl: boardgamesList[index]['imageUrl']),
                       );
                     }),

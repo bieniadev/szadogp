@@ -39,7 +39,6 @@ class LoginScreen extends ConsumerWidget {
           dbRef.put(1, response);
         }
 
-        // to do: test 2 dolne linie czy dynamicznie zmieniaja user name
         final Map<String, dynamic> userInfoResponse = await ApiServices().getUserInfo();
         ref.read(userInfoProvider.notifier).state = userInfoResponse;
 
