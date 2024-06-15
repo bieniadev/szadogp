@@ -180,9 +180,6 @@ class SummaryScreen extends ConsumerWidget {
               const SizedBox(height: 20),
               ActionButton(
                 onTap: () {
-                  //   print('ZDJECIE: $choosenImage');
-                  //   print('ZDJECIE PATH: ${choosenImage!.path}');
-                  //   print(summaryDataGet);
                   sendDataToDatabase(summaryData);
                   if (choosenImage?.path != null) {
                     ApiServices().uploadImageForGame(summaryData.id, choosenImage!.path);

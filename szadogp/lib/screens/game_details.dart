@@ -25,12 +25,25 @@ class GameDetailsScreen extends ConsumerWidget {
       await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ChoosePictureScreen()));
 
       XFile? chosenImage = ref.read(choosenImageProvider);
-
       if (chosenImage != null) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 2),
+          content: const Text('Przesyłanie zdjęcia...'),
+          backgroundColor: Colors.blue[300],
+        ));
         await ApiServices().uploadImageForGame(gameId, chosenImage.path);
-        ref.invalidate(userStatsProvider);
+
         final List<dynamic> response = await ApiServices().getUserStats();
         ref.read(userRecentGamesProvider.notifier).state = response;
+        ref.invalidate(userStatsProvider);
+        ref.invalidate(gameDetailsFutureProvider);
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 2),
+          content: Text('Pomyślnie przesłano zdjęcie!'),
+          backgroundColor: Colors.green,
+        ));
       }
 
       ref.read(isLoadingProvider.notifier).state = false;
@@ -59,26 +72,6 @@ class GameDetailsScreen extends ConsumerWidget {
 
     return gameDetailsFuture.when(
       data: (result) {
-        // print(result);
-        // String isoDate = result['finishedAt'];
-        // DateTime parsedDate = DateTime.parse(isoDate);
-        // DateTime now = DateTime.now();
-        // Duration difference = now.difference(parsedDate);
-
-        // int daysDifference = difference.inDays;
-        // int hoursDifference = difference.inHours;
-
-        // late String formattedDate;
-        // if (daysDifference == 0) {
-        //   if (hoursDifference == 0) {
-        //     formattedDate = 'Przed chwilą';
-        //   } else {
-        //     formattedDate = 'Upłynęło $hoursDifference godzin';
-        //   }
-        // } else {
-        //   formattedDate = 'Upłynęło $daysDifference dni';
-        // }
-
         String formattedDate = formatDate(result['finishedAt']);
         final String isWinnerText = gameStatsData['isWinner'] ? 'Zwycięstwo' : 'Porażka';
         return Scaffold(
@@ -204,8 +197,8 @@ class GameDetailsScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          const Spacer(),
-                          Image.asset('assets/grupa_${index + 1}.png'),
+                          //   const Spacer(),
+                          //   Image.asset('assets/grupa_${index + 1}.png'),
                           const SizedBox(width: 10),
                         ],
                       );
@@ -225,7 +218,11 @@ class GameDetailsScreen extends ConsumerWidget {
                         padding: const EdgeInsets.only(bottom: 10, right: 16, left: 16),
                         child: SummarySection(
                           text: 'Zdjęcie',
-                          widget: Image.network(result['imageUrl']),
+                          widget: Container(
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(30)),
+                            child: Image.network(result['imageUrl']),
+                          ),
                         ))
                     : GestureDetector(
                         onTap: () => selectImage(result['_id']),

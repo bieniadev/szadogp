@@ -38,16 +38,16 @@ class LoginScreen extends ConsumerWidget {
           ref.read(userTokenProvider.notifier).state = response;
           dbRef.put(1, response);
         }
-
+        ref.invalidate(userDataProvider);
         final Map<String, dynamic> userInfoResponse = await ApiServices().getUserInfo();
         ref.read(userInfoProvider.notifier).state = userInfoResponse;
 
         //unfocus keyboard
         FocusManager.instance.primaryFocus?.unfocus();
 
-        ref.read(isLoadingProvider.notifier).state = false;
         //set current screen to home;
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+        ref.read(isLoadingProvider.notifier).state = false;
       } catch (err) {
         ref.read(isLoadingProvider.notifier).state = false;
         // ignore: use_build_context_synchronously
