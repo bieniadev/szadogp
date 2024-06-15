@@ -184,7 +184,9 @@ class SummaryScreen extends ConsumerWidget {
                   //   print('ZDJECIE PATH: ${choosenImage!.path}');
                   //   print(summaryDataGet);
                   sendDataToDatabase(summaryData);
-                  ApiServices().uploadImageForGame(summaryData.id, choosenImage!.path);
+                  if (choosenImage?.path != null) {
+                    ApiServices().uploadImageForGame(summaryData.id, choosenImage!.path);
+                  }
                   ref.read(selectedImageProvider.notifier).state = null;
                 },
                 hintText: 'ZAPISZ',

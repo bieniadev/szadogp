@@ -12,6 +12,7 @@ import 'package:szadogp/providers/running_game.dart';
 import 'package:szadogp/providers/timer_value.dart';
 import 'package:szadogp/providers/user_data.dart';
 import 'package:szadogp/screens/summary_game.dart';
+import 'package:szadogp/services/services.dart';
 
 class RunningGameScreen extends ConsumerWidget {
   const RunningGameScreen({super.key});
@@ -20,10 +21,15 @@ class RunningGameScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     Map<String, dynamic> userInfo = ref.read(userInfoProvider);
     Map<String, dynamic> lobbyData = ref.read(runningGameProvider);
-    if (lobbyData.isEmpty) {
-      final lobbyLocalData = Hive.box('user-token').get(3);
-      lobbyData = lobbyLocalData;
+    if (lobbyData.isEmpty && userInfo.isEmpty) {
+      final userLocalInfo = Hive.box('user-token').get(2) as Map<dynamic, dynamic>;
+      userInfo = userLocalInfo.map((key, value) => MapEntry(key as String, value as dynamic));
+      print('$userInfo');
+      final lobbyLocalData = Hive.box('user-token').get(3) as Map<dynamic, dynamic>;
+      print('$lobbyLocalData');
+      lobbyData = lobbyLocalData.map((key, value) => MapEntry(key as String, value as dynamic));
     }
+
     final bool isAdmin = lobbyData['creatorId'] == userInfo['_id'];
 
     Duration timerValue = const Duration();
