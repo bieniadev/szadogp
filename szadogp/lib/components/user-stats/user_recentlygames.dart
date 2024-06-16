@@ -20,15 +20,13 @@ class UserRecentlyGames extends StatelessWidget {
             itemCount: userStatsData.length,
             itemBuilder: (context, index) {
               List<dynamic> winnersTeam = userStatsData[index]['winnersGroup'];
-              if (userStatsData[index]['netElo'] == null) {
-                userStatsData[index]['netElo'] = 0;
-              }
               return InkWell(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => GameDetailsScreen(
                           gameStatsData: userStatsData[index],
                           userData: userData,
                           gameId: userStatsData[index]['_id'],
+                          eloGains: userStatsData[index]['eloGains'],
                         ))),
                 child: Container(
                   color: index % 2 == 0 ? Colors.black.withOpacity(0.15) : Colors.black.withOpacity(0.25),
@@ -47,7 +45,7 @@ class UserRecentlyGames extends StatelessWidget {
                                     children: [
                                       const Text('W', style: TextStyle(fontSize: 16)),
                                       const SizedBox(width: 4),
-                                      Text('+${userStatsData[index]['netElo']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                      Text('${userStatsData[index]['eloGains']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                   const Divider(
@@ -72,7 +70,7 @@ class UserRecentlyGames extends StatelessWidget {
                                     children: [
                                       const Text('L', style: TextStyle(fontSize: 16)),
                                       const SizedBox(width: 4),
-                                      Text('-${userStatsData[index]['netElo']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                      Text('${userStatsData[index]['eloGains']}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                                     ],
                                   ),
                                   const Divider(

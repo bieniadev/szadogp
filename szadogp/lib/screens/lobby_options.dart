@@ -5,7 +5,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:szadogp/components/logo_appbar.dart';
 
 class OptionsTerraformingMars extends StatefulWidget {
-  const OptionsTerraformingMars({super.key});
+  const OptionsTerraformingMars({super.key, required this.users});
+
+  final List<dynamic> users;
 
   @override
   State<OptionsTerraformingMars> createState() => OptionsTerraformingMarsState();
@@ -13,11 +15,6 @@ class OptionsTerraformingMars extends StatefulWidget {
 
 class OptionsTerraformingMarsState extends State<OptionsTerraformingMars> {
   final _selected = BehaviorSubject<int>();
-  final List<String> _wheelItems = const [
-    'Default',
-    'Hellas',
-    'Elysium',
-  ];
   String _result = '';
 
   @override
@@ -28,6 +25,7 @@ class OptionsTerraformingMarsState extends State<OptionsTerraformingMars> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> usernames = widget.users.map((username) => username['username'] as String).toList();
     return Scaffold(
       appBar: LogoAppbar(
         title: Image.asset('assets/images/logo.png', height: 30),
@@ -40,18 +38,18 @@ class OptionsTerraformingMarsState extends State<OptionsTerraformingMars> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Wylosuj planszę', style: GoogleFonts.rubik(fontSize: 24, fontWeight: FontWeight.bold, letterSpacing: 2)),
+            Text('Wylosuj pierwszego gracza', style: GoogleFonts.rubik(fontSize: 22, fontWeight: FontWeight.bold, letterSpacing: 2)),
             const SizedBox(height: 30),
             GestureDetector(
-              onTap: () => setState(() => _selected.add(Fortune.randomInt(0, _wheelItems.length))),
+              onTap: () => setState(() => _selected.add(Fortune.randomInt(0, usernames.length))),
               child: SizedBox(
                 height: 280,
                 width: 280,
                 child: FortuneWheel(
-                  items: _wheelItems.map((name) => FortuneItem(child: Text(name, style: GoogleFonts.rubikMonoOne(letterSpacing: 1.5, fontSize: 14)))).toList(),
+                  items: usernames.map((name) => FortuneItem(child: Text(name, style: GoogleFonts.rubikMonoOne(letterSpacing: 1.5, fontSize: 14)))).toList(),
                   selected: _selected.stream,
                   animateFirst: false,
-                  onAnimationEnd: () => setState(() => _result = _wheelItems[_selected.value]),
+                  onAnimationEnd: () => setState(() => _result = usernames[_selected.value]),
                 ),
               ),
             ),

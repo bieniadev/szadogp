@@ -6,7 +6,6 @@ import 'package:hive/hive.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/providers/current_screen.dart';
 import 'package:szadogp/providers/is_loading.dart';
-import 'package:szadogp/providers/options_gamebutton.dart';
 import 'package:szadogp/providers/running_game.dart';
 import 'package:szadogp/screens/running_game.dart';
 import 'package:szadogp/services/services.dart';
@@ -72,7 +71,6 @@ class AdvancedActionButton extends ConsumerWidget {
                 ref.read(runningGameProvider.notifier).state = response;
                 Hive.box('user-token').put(3, response);
                 ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
-                ref.read(optionsButtonProvider.notifier).state = [];
                 ref.read(isLoadingProvider.notifier).state = false;
                 timer!.cancel();
               } catch (err) {

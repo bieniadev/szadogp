@@ -12,11 +12,18 @@ import 'package:szadogp/screens/choose_picture.dart';
 import 'package:szadogp/services/services.dart';
 
 class GameDetailsScreen extends ConsumerWidget {
-  const GameDetailsScreen({super.key, required this.gameStatsData, required this.userData, required this.gameId});
+  const GameDetailsScreen({
+    super.key,
+    required this.gameStatsData,
+    required this.userData,
+    required this.gameId,
+    required this.eloGains,
+  });
 
   final Map<String, dynamic> gameStatsData;
   final Map<String, dynamic> userData;
   final String gameId;
+  final String eloGains;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -73,7 +80,7 @@ class GameDetailsScreen extends ConsumerWidget {
     return gameDetailsFuture.when(
       data: (result) {
         String formattedDate = formatDate(result['finishedAt']);
-        final String isWinnerText = gameStatsData['isWinner'] ? 'Zwycięstwo' : 'Porażka';
+        final String isWinnerText = gameStatsData['isWinner'] ? '($eloGains) Zwycięstwo' : '($eloGains) Porażka';
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
