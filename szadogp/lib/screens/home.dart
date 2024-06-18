@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/action_button.dart';
 import 'package:szadogp/components/lobby/input_code.dart';
 import 'package:szadogp/components/user-stats/user_panel.dart';
@@ -64,6 +65,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         try {
                           final lobbyData = await ApiServices().joinGame(_codeController.text.toUpperCase());
                           ref.read(lobbyDataProvider.notifier).state = lobbyData;
+                          //funckja do wysylania body? do websoketa o stworzeniu lobby
+                          final userLocalInfo = Hive.box('user-token').get(2) as Map<dynamic, dynamic>;
+                          Map<String, dynamic> eventBody = {
+                            'roomId': lobbyData['roomId'],
+                            'userId': userLocalInfo['_id'],
+                          };
+                          WebSocketSingleton().socket.emit('join-game', eventBody);
+
                           ref.read(isLoadingProvider.notifier).state = false;
                           ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
                         } catch (err) {

@@ -23,9 +23,15 @@ class SelectGameScreen extends ConsumerWidget {
         //funkcja ktora wysyla do providera dane o aktualnym userze
         final userInfo = await ApiServices().getUserInfo();
         ref.read(userInfoProvider.notifier).state = userInfo;
+        //funckja do wysylania body? do websoketa o stworzeniu lobby
+        Map<String, dynamic> eventBody = {
+          'roomId': lobbyData['roomId'],
+          'userId': userInfo['_id'],
+        };
+        WebSocketSingleton().socket.emit('admin-join-game', eventBody);
+
         // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
-
         ref.read(currentScreenProvider.notifier).state = const LobbyScreen();
       } catch (err) {
         // ignore: use_build_context_synchronously

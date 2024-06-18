@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:socket_io_client/socket_io_client.dart' as io;
 
 class ApiServices {
   //api link
@@ -271,3 +274,45 @@ class ApiServices {
 }
 
 final apiServicesProvider = Provider<ApiServices>((ref) => ApiServices());
+
+class StreamSocket {
+  final _socketResponse = StreamController<Map<dynamic, dynamic>>();
+
+  addToSink(data) => _socketResponse.sink.add(data);
+
+  Stream<Map<dynamic, dynamic>> get getResponse => _socketResponse.stream;
+
+  void dispose() {
+    _socketResponse.close();
+  }
+}
+
+class WebSocketSingleton {
+  static final WebSocketSingleton _singleton = WebSocketSingleton._internal();
+  late io.Socket _socket;
+
+  factory WebSocketSingleton() {
+    return _singleton;
+  }
+
+  WebSocketSingleton._internal() {
+    _connectAndListen();
+  }
+
+  void _connectAndListen() {
+    _socket = io.io(
+      'https://szadogp-production.up.railway.app/games-realtime-manager',
+      io.OptionBuilder().setTransports(['websocket']).build(),
+    );
+
+    _socket.onConnect((_) {
+      debugPrint('connected');
+    });
+
+    _socket.onDisconnect((_) {
+      debugPrint('disconnected');
+    });
+  }
+
+  io.Socket get socket => _socket;
+}

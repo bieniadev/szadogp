@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:szadogp/components/lobby/advanced_action_button.dart';
 import 'package:szadogp/components/lobby/code_displayer.dart';
 import 'package:szadogp/components/image_border.dart';
@@ -13,7 +13,6 @@ import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/lobby_options.dart';
 import 'package:szadogp/services/services.dart';
 import 'package:szadogp/components/popup.dart';
-import 'package:web_socket_channel/web_socket_channel.dart'; // websocket
 
 class LobbyScreen extends ConsumerStatefulWidget {
   const LobbyScreen({super.key});
@@ -23,9 +22,9 @@ class LobbyScreen extends ConsumerStatefulWidget {
 }
 
 class _LobbyScreenState extends ConsumerState<LobbyScreen> {
-  Timer? _timer;
-  String _lobbyId = '';
-  List<dynamic> _usersList = [];
+  final StreamSocket _streamSocket = StreamSocket();
+
+  final List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
   final List<Map<String, dynamic>> _groups = [{}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
   final List<int?> _groupValue = [null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
@@ -33,44 +32,23 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   final List<dynamic> _usersInLobby = [];
   List<Map<String, dynamic>> _fixedGroups = [];
 
-  final WebSocketChannel _channel = WebSocketChannel.connect(Uri.parse('link'));
-
   //func checking for players to join
-  void _startPolling(lobbyId) {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-      lobbyId = _lobbyId;
-      List<dynamic> response = await ApiServices().checkForUsersInLobby(lobbyId);
-      _usersList = response;
-      if (_lobbyData['users'].length != _usersList.length) {
-        setState(() {
-          _lobbyData['users'] = _usersList;
-          _groupValue.add(null);
-          _groups.add({});
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: const Duration(seconds: 2),
-            content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
-            backgroundColor: Colors.blue[300],
-          ));
-        });
-      }
-    });
-  }
-
   void _handlePlayerJoin(joinedUserData) {
+    //socket
     // joinedUserData //cos zrobic zeby go dodalo?
+    _usersList.add(joinedUserData);
     if (_lobbyData['users'].length != _usersList.length) {
       setState(() {
         _lobbyData['users'] = _usersList;
         _groupValue.add(null);
         _groups.add({});
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          duration: const Duration(seconds: 2),
-          content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
-          backgroundColor: Colors.blue[300],
-        ));
       });
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(seconds: 2),
+        content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
+        backgroundColor: Colors.blue[300],
+      ));
     }
   }
 
@@ -143,21 +121,26 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     }
   }
 
+  bool _isadmin = false;
+
   @override
   void initState() {
     super.initState();
-    //nasluchiwanie ??
-    // _channel.stream.listen(
-    //   (data) {
-    //     setState(() => _handlePlayerJoin(data));
-    //   },
-    // );
-    _startPolling(_lobbyId);
+    // nasluchiwanie
+    _usersList.add(Hive.box('user-token').get(2));
+    WebSocketSingleton().socket.on('user-joined', (data) {
+      _streamSocket.addToSink(data);
+      _handlePlayerJoin(data['user']);
+    });
+    WebSocketSingleton().socket.on('game-started', (_) {
+      if (!_isadmin) {
+        ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+      }
+    });
   }
 
   @override
   void dispose() {
-    _channel.sink.close();
     super.dispose();
   }
 
@@ -165,13 +148,11 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider); //uncoment
     Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncoment
-    // List<Widget> optionsWidget = ref.read(optionsButtonProvider(context));
-    _lobbyId = _lobbyData['_id'];
     //check for admin
-    final bool isAdmin = _lobbyData['creatorId'] == userInfo['_id'];
+    _isadmin = _lobbyData['creatorId'] == userInfo['_id'];
 
     deleteUserFromLobby(String name, String userId) {
-      if (isAdmin) {
+      if (_isadmin) {
         OnTapPopups().removeUserFromLobby(context, name, userId);
       }
     }
@@ -188,7 +169,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
         actions: [
           IconButton(
             onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => OptionsTerraformingMars(users: _lobbyData['users']))),
-            //   onPressed: () => print('test'),
             icon: const Icon(Icons.help),
           )
         ],
@@ -199,10 +179,10 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           children: [
             ImageRounded(imageUrl: _lobbyData['boardGameId']['imageUrl']),
             const SizedBox(height: 10),
+
             //przycisk do startowania gry
             AdvancedActionButton(
-              isAdmin: isAdmin,
-              timer: _timer,
+              isAdmin: _isadmin,
               lobbyData: _lobbyData,
               fixedGroups: _fixedGroups,
             ),
@@ -215,20 +195,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
               ],
             ),
             const SizedBox(height: 5),
-            //test nasluchiwanie websocket
-            StreamBuilder(
-              stream: _channel.stream,
-              builder: (context, snapshot) {
-                final dynamic data;
-                if (snapshot.hasData) {
-                  data = snapshot.data;
-                  print('DATA W KONSOLI: $data');
-                } else {
-                  data = '';
-                }
-                return Text('lol xd: jakas data przyszla zoba e: $data');
-              },
-            ),
+
             //lista graczy w lobby
             Expanded(
               child: ListView.builder(
@@ -251,16 +218,16 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                               title: Text(_lobbyData['users'][index]['username'], style: GoogleFonts.rubik(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w700)),
                               subtitle: Builder(
                                 builder: (context) {
-                                  if (isAdmin && _lobbyData['users'][index]['username'] == userInfo['username']) {
+                                  if (_isadmin && _lobbyData['users'][index]['username'] == userInfo['username']) {
                                     return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
                                   }
-                                  if (!isAdmin && _lobbyData['creatorId'] == _lobbyData['users'][index]['_id']) {
+                                  if (!_isadmin && _lobbyData['creatorId'] == _lobbyData['users'][index]['_id']) {
                                     return Text('ADMIN', style: GoogleFonts.rubikMonoOne(color: Colors.red[400], letterSpacing: 3, fontSize: 12, fontWeight: FontWeight.w300));
                                   }
                                   return const SizedBox(height: 0);
                                 },
                               ),
-                              trailing: isAdmin
+                              trailing: _isadmin
                                   ? Padding(
                                       padding: const EdgeInsets.only(right: 6),
                                       child: DropdownButton<int>(

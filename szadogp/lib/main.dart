@@ -3,18 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:szadogp/providers/current_screen.dart';
+import 'package:szadogp/services/services.dart';
 import 'package:szadogp/theme.dart';
 
 void main() async {
+  WebSocketSingleton();
   WidgetsFlutterBinding.ensureInitialized();
-
   await Hive.initFlutter();
+  await Hive.openBox('user-token');
 
-  // ignore: unused_local_variable
-  var db = await Hive.openBox('user-token');
-
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((_) => runApp(const ProviderScope(child: App())));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) => runApp(const ProviderScope(child: App())));
 }
 
 class App extends ConsumerWidget {

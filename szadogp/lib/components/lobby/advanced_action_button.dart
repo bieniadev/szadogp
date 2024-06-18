@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
@@ -14,13 +12,11 @@ class AdvancedActionButton extends ConsumerWidget {
   const AdvancedActionButton({
     super.key,
     required this.isAdmin,
-    required this.timer,
     required this.lobbyData,
     required this.fixedGroups,
   });
 
   final bool isAdmin;
-  final Timer? timer;
   final Map<String, dynamic> lobbyData;
   final List<Map<String, dynamic>> fixedGroups;
 
@@ -69,10 +65,15 @@ class AdvancedActionButton extends ConsumerWidget {
 
                 final Map<String, dynamic> response = await ApiServices().startGame(fixedGroups, lobbyData['_id']);
                 ref.read(runningGameProvider.notifier).state = response;
+
+                Map<String, dynamic> eventBody = {
+                  'roomId': lobbyData['roomId'],
+                };
+                WebSocketSingleton().socket.emit('start-game', eventBody);
+
                 Hive.box('user-token').put(3, response);
                 ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
                 ref.read(isLoadingProvider.notifier).state = false;
-                timer!.cancel();
               } catch (err) {
                 ref.read(isLoadingProvider.notifier).state = false;
                 throw Exception(err);
@@ -81,34 +82,6 @@ class AdvancedActionButton extends ConsumerWidget {
             hintText: 'START',
             hasBorder: false,
           )
-        // to do: sprawdzenie na dołączenie gracza nie ma sensu bo zwraca puste grupy (musi wysłać api request ze zwrotna informacja o grupach wybranych)
-        // : ActionButton(
-        //     onTap: () async {
-        //       try {
-        //         //bambikowy kod dla wpusczania nieadmina do gry
-        //         final Map<String, dynamic> response = await ApiServices().checkIfGameStarted(lobbyData['_id']);
-
-        //         if (response['redirect']!) {
-        //           ref.read(currentScreenProvider.notifier).state = const RunningGameScreen();
-        //         }
-        //         if (!response['redirect']!) {
-        //           ref.read(isLoadingProvider.notifier).state = false;
-        //           // ignore: use_build_context_synchronously
-        //           return ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        //             duration: Duration(seconds: 3),
-        //             content: Text('Gra sie jescze nie zaczeła'),
-        //             backgroundColor: Colors.red,
-        //           ));
-        //         }
-        //         ref.read(isLoadingProvider.notifier).state = false;
-        //       } catch (err) {
-        //         ref.read(isLoadingProvider.notifier).state = false;
-        //         throw Exception(err);
-        //       }
-        //     },
-        //     hintText: 'CZY START?',
-        //     hasBorder: false,
-        //   );
         : const SizedBox(height: 0);
   }
 }
