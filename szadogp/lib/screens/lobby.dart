@@ -57,6 +57,23 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     });
   }
 
+  void _handlePlayerJoin(joinedUserData) {
+    // joinedUserData //cos zrobic zeby go dodalo?
+    if (_lobbyData['users'].length != _usersList.length) {
+      setState(() {
+        _lobbyData['users'] = _usersList;
+        _groupValue.add(null);
+        _groups.add({});
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 2),
+          content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
+          backgroundColor: Colors.blue[300],
+        ));
+      });
+    }
+  }
+
   void _dropDownHandler(value, index) {
     {
       setState(() {
@@ -129,7 +146,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
-
+    //nasluchiwanie ??
+    // _channel.stream.listen(
+    //   (data) {
+    //     setState(() => _handlePlayerJoin(data));
+    //   },
+    // );
     _startPolling(_lobbyId);
   }
 
