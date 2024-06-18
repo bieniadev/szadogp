@@ -133,7 +133,6 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
     super.initState();
     _lobbyId = '';
     // nasluchiwanie
-    // _usersList.add(Hive.box('user-token').get(2));
     WebSocketSingleton().socket.on('user-joined', (data) {
       _streamSocket.addToSink(data);
       _handlePlayerJoin();
