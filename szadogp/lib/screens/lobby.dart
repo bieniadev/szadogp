@@ -13,6 +13,7 @@ import 'package:szadogp/screens/home.dart';
 import 'package:szadogp/screens/lobby_options.dart';
 import 'package:szadogp/services/services.dart';
 import 'package:szadogp/components/popup.dart';
+import 'package:web_socket_channel/web_socket_channel.dart'; // websocket
 
 class LobbyScreen extends ConsumerStatefulWidget {
   const LobbyScreen({super.key});
@@ -27,11 +28,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
   final List<Map<String, dynamic>> _groups = [{}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
+  final List<int?> _groupValue = [null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
   List<String> _usersIdGroups = [];
   final List<dynamic> _usersInLobby = [];
   List<Map<String, dynamic>> _fixedGroups = [];
 
-  final List<int?> _groupValue = [null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
+  final WebSocketChannel _channel = WebSocketChannel.connect(Uri.parse('link'));
 
   //func checking for players to join
   void _startPolling(lobbyId) {
@@ -169,6 +171,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
           children: [
             ImageRounded(imageUrl: _lobbyData['boardGameId']['imageUrl']),
             const SizedBox(height: 10),
+            //przycisk do startowania gry
             AdvancedActionButton(
               isAdmin: isAdmin,
               timer: _timer,
@@ -184,6 +187,21 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
               ],
             ),
             const SizedBox(height: 5),
+            //test nasluchiwanie websocket
+            StreamBuilder(
+              stream: _channel.stream,
+              builder: (context, snapshot) {
+                final dynamic data;
+                if (snapshot.hasData) {
+                  data = snapshot.data;
+                  print('DATA W KONSOLI: $data');
+                } else {
+                  data = '';
+                }
+                return Text('lol xd: jakas data przyszla zoba e: $data');
+              },
+            ),
+            //lista graczy w lobby
             Expanded(
               child: ListView.builder(
                   itemCount: _lobbyData['users'].length,
@@ -243,12 +261,13 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
                                         onChanged: (value) => _dropDownHandler(value, index),
                                       ),
                                     )
-                                  : const SizedBox(height: 0), // to do: dynamiczne wyswietlanie stanu grupy dla nie adminow
+                                  : const SizedBox(height: 0),
                             ),
                           ),
                         ),
                       )),
             ),
+            //kod
             CodeDisplayer(lobbyData: _lobbyData),
           ],
         ),
