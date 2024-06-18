@@ -134,6 +134,12 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   }
 
   @override
+  void dispose() {
+    _channel.sink.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider); //uncoment
     Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncoment
