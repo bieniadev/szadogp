@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:szadogp/components/lobby/advanced_action_button.dart';
 import 'package:szadogp/components/lobby/code_displayer.dart';
 import 'package:szadogp/components/image_border.dart';
@@ -24,7 +23,8 @@ class LobbyScreen extends ConsumerStatefulWidget {
 class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   final StreamSocket _streamSocket = StreamSocket();
 
-  final List<dynamic> _usersList = [];
+  late String _lobbyId;
+  List<dynamic> _usersList = [];
   Map<String, dynamic> _lobbyData = {};
   final List<Map<String, dynamic>> _groups = [{}]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
   final List<int?> _groupValue = [null]; //puste/null dla jednego gracza, dla kazdego kolejnego dodaje sie kolejna pusta wartosc
@@ -33,17 +33,19 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   List<Map<String, dynamic>> _fixedGroups = [];
 
   //func checking for players to join
-  void _handlePlayerJoin(joinedUserData) {
-    //socket
-    // joinedUserData //cos zrobic zeby go dodalo?
-    _usersList.add(joinedUserData);
+  void _handlePlayerJoin() async {
+    String lobbyId = _lobbyId;
+    List<dynamic> response = await ApiServices().checkForUsersInLobby(lobbyId);
+    _usersList = response;
     if (_lobbyData['users'].length != _usersList.length) {
       setState(() {
         _lobbyData['users'] = _usersList;
         _groupValue.add(null);
         _groups.add({});
       });
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).clearSnackBars();
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         duration: const Duration(seconds: 2),
         content: Text('${_lobbyData['users'].last['username']} dołączył do lobby'),
@@ -53,69 +55,72 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   }
 
   void _dropDownHandler(value, index) {
-    {
-      setState(() {
-        _groupValue[index] = value!;
-      });
-      String userGroupId = _lobbyData['users'][index]['_id'];
-      Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
-      _usersInLobby.add(infoUser);
-      Map<String, dynamic> userToRemove = {};
-      for (var user in _usersInLobby) {
-        if (user['id'] == infoUser['id']) {
-          userToRemove = user;
-          break;
+    setState(() {
+      _groupValue[index] = value!;
+    });
+    String userGroupId = _lobbyData['users'][index]['_id'];
+    Map<String, dynamic> infoUser = {'id': index + 1, 'nrGroup': _groupValue[index]!, '_id': userGroupId};
+    _usersInLobby.add(infoUser);
+    Map<String, dynamic> userToRemove = {};
+    for (var user in _usersInLobby) {
+      if (user['id'] == infoUser['id']) {
+        userToRemove = user;
+        break;
+      }
+    }
+    if (_usersInLobby.length > _lobbyData['users'].length) {
+      _usersInLobby.remove(userToRemove);
+    }
+
+    _usersIdGroups = [];
+    for (var user in _usersInLobby) {
+      if (infoUser['nrGroup'] == user['nrGroup']) {
+        _usersIdGroups.add(user['_id']);
+      }
+    }
+    _groups[index] = {
+      'groupIdentifier': _groupValue[index],
+      'users': _usersIdGroups,
+    };
+    if (_groups.last.isEmpty) {
+      return;
+    }
+    // scale together multi groupIdentifier into one
+    List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
+      Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
+
+      for (var group in groups) {
+        int groupIdentifier = group['groupIdentifier'] ?? 0;
+
+        if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
+          uniqueGroupsMap[groupIdentifier] = group;
         }
       }
-      if (_usersInLobby.length > _lobbyData['users'].length) {
-        _usersInLobby.remove(userToRemove);
-      }
+      List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
+      uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
+      return uniqueGroups;
+    }
 
-      _usersIdGroups = [];
-      for (var user in _usersInLobby) {
-        if (infoUser['nrGroup'] == user['nrGroup']) {
-          _usersIdGroups.add(user['_id']);
-        }
-      }
-      _groups[index] = {
-        'groupIdentifier': _groupValue[index],
-        'users': _usersIdGroups,
-      };
-      if (_groups.last.isEmpty) {
-        return;
-      }
-      // scale together multi groupIdentifier into one
-      List<Map<String, dynamic>> removeDuplicateGroups(List<Map<String, dynamic>> groups) {
-        Map<int, Map<String, dynamic>> uniqueGroupsMap = {};
+    //group bug lenght bug fix
+    _fixedGroups = removeDuplicateGroups(_groups);
 
-        for (var group in groups) {
-          int groupIdentifier = group['groupIdentifier'] ?? 0;
+    List<String> fixedGroupsLenghtCheck = [];
+    for (var userId in _fixedGroups) {
+      for (var id in userId['users']) {
+        fixedGroupsLenghtCheck.add(id);
+      }
+    }
 
-          if (!uniqueGroupsMap.containsKey(groupIdentifier) || (group['users'] as List<dynamic>).length > (uniqueGroupsMap[groupIdentifier]!['users'] as List<dynamic>).length) {
-            uniqueGroupsMap[groupIdentifier] = group;
+    for (var group in _fixedGroups) {
+      if (group['groupIdentifier'] != infoUser['nrGroup']) {
+        List usersToRemove = [];
+        for (var user in group['users']) {
+          if (user == infoUser['_id'] && fixedGroupsLenghtCheck.length > _lobbyData['users'].length) {
+            usersToRemove.add(user);
           }
         }
-
-        List<Map<String, dynamic>> uniqueGroups = uniqueGroupsMap.values.toList();
-        uniqueGroups.sort((a, b) => a['groupIdentifier'].compareTo(b['groupIdentifier']));
-        return uniqueGroups;
-      }
-
-      //group bug lenght bug fix
-      _fixedGroups = removeDuplicateGroups(_groups);
-      List<String> fixedGroupsLenghtCheck = [];
-      for (var userId in _fixedGroups) {
-        for (var id in userId['users']) {
-          fixedGroupsLenghtCheck.add(id);
-        }
-      }
-      for (var group in _fixedGroups) {
-        if (group['groupIdentifier'] != infoUser['nrGroup']) {
-          for (var user in group['users']) {
-            if (user == infoUser['_id'] && fixedGroupsLenghtCheck.length > _lobbyData['users'].length) {
-              group['users'].remove(infoUser['_id']);
-            }
-          }
+        for (var userToRemove in usersToRemove) {
+          group['users'].remove(userToRemove);
         }
       }
     }
@@ -126,15 +131,22 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   void initState() {
     super.initState();
+    _lobbyId = '';
     // nasluchiwanie
-    _usersList.add(Hive.box('user-token').get(2));
+    // _usersList.add(Hive.box('user-token').get(2));
     WebSocketSingleton().socket.on('user-joined', (data) {
       _streamSocket.addToSink(data);
-      _handlePlayerJoin(data['user']);
+      _handlePlayerJoin();
     });
     WebSocketSingleton().socket.on('game-started', (_) {
       if (!_isadmin) {
         ref.read(currentScreenProvider.notifier).state = const HomeScreen();
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          duration: const Duration(seconds: 5),
+          content: const Text('Gra pomyślnie wystartowała! Możesz teraz wyjść z aplikacji. Powodzenia!'),
+          backgroundColor: Colors.blue[300],
+        ));
       }
     });
   }
@@ -147,6 +159,7 @@ class _LobbyScreenState extends ConsumerState<LobbyScreen> {
   @override
   Widget build(BuildContext context) {
     _lobbyData = ref.watch(lobbyDataProvider); //uncoment
+    _lobbyId = _lobbyData['_id'];
     Map<String, dynamic> userInfo = ref.read(userInfoProvider); //uncoment
     //check for admin
     _isadmin = _lobbyData['creatorId'] == userInfo['_id'];
