@@ -1,7 +1,7 @@
 # Plik apk do pobrania aplikacji
 znajduje się zawsze w najnowszym wydaniu (release) jako: szadogp_vX.X.X.apk
 
-## S.Z.A.DO GP -> Rozszyfrować hasło
+## S.Z.A.DO GP
 
 -  NIE WSPIERA SYSTEMU IOS
 
